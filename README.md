@@ -1,86 +1,102 @@
-# BATIM GADAI — Sistem Informasi Gadai Elektronik
+# BATIM GADAI - Sistem Informasi Gadai Elektronik
 
-> Sistem Informasi berbasis web untuk pengelolaan transaksi gadai barang elektronik dan barang bergerak secara terkomputerisasi, dikembangkan untuk **PT Bintang Timur**.
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/Alpine.js-3.x-77C1D2?style=for-the-badge&logo=alpinedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite-5.x-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
+</p>
 
-![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=for-the-badge&logo=alpinedotjs&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-
----
-
-## 📖 Tentang Proyek
-
-**BATIM GADAI** adalah sistem informasi gadai elektronik yang dirancang untuk membantu pengelolaan operasional pegadaian secara digital. Sistem ini membantu pengelolaan operasional pegadaian swasta dan menggantikan proses manual dalam pencatatan transaksi gadai, pengelolaan data nasabah, taksiran barang, perpanjangan, hingga pelunasan gadai.
-
-Sistem ini merupakan bagian dari platform digital BATIM GADAI yang terdiri dari:
-
-- **Web System** _(repo ini)_ — untuk superadmin, admin, dan officer
-- **Mobile App** _(repo terpisah)_ — untuk nasabah berbasis Flutter
-
-### Keunggulan Sistem
-
-- 🏷️ **Loker Barcode** — Barang jaminan disimpan di loker khusus dengan sistem barcode terintegrasi. Setiap barang dapat diidentifikasi pemilik dan detailnya hanya dengan scan barcode.
-- ⚡ **Pencairan Hari Ini** — Proses gadai cepat dengan dana cair di hari yang sama saat pengajuan.
-- 📊 **Taksiran Transparan** — Nilai taksiran dihitung langsung di depan nasabah.
+<p align="center">
+  Sistem informasi berbasis web untuk pengelolaan operasional pegadaian swasta secara terkomputerisasi.<br>
+  Dikembangkan untuk <strong>PT Bintang Timur</strong> sebagai bagian dari platform digital <strong>BATIM GADAI</strong>.
+</p>
 
 ---
 
-## 🧱 Teknologi
+## Tentang Proyek
 
-| Layer                  | Teknologi         |
-| ---------------------- | ----------------- |
-| Backend Framework      | Laravel 12        |
-| Frontend Styling       | Tailwind CSS v4   |
-| Frontend Interactivity | Alpine.js         |
-| Build Tool             | Vite              |
-| Database               | MySQL             |
-| Admin Template         | TailAdmin Laravel |
-| Server Lokal           | Laragon           |
+**BATIM GADAI** adalah sistem informasi gadai elektronik yang dirancang untuk mendigitalisasi seluruh alur operasional pegadaian swasta — mulai dari pencatatan pengajuan gadai, taksiran barang, pengelolaan data nasabah, perpanjangan, hingga pelunasan gadai. Sistem ini hadir untuk menggantikan proses manual yang rentan terhadap kesalahan pencatatan dan keterlambatan informasi, sehingga seluruh operasional dapat berjalan lebih cepat, akurat, dan terpantau secara real-time.
 
----
+Platform digital BATIM GADAI terdiri dari dua komponen utama:
 
-## 👥 Role Pengguna
-
-| Role         | Akses      | Deskripsi                                             |
-| ------------ | ---------- | ----------------------------------------------------- |
-| `superadmin` | Web        | Kepala outlet / direktur — akses penuh seluruh sistem |
-| `admin`      | Web        | Pimpinan cabang — kelola data cabang masing-masing    |
-| `officer`    | Web        | Petugas front office, kasir, juru taksir              |
-| `nasabah`    | Mobile App | Akses via aplikasi Flutter _(repo terpisah)_          |
+| Platform   | Repo                        | Pengguna                   |
+| ---------- | --------------------------- | -------------------------- |
+| Web System | _(repo ini)_                | Superadmin, Admin, Officer |
+| Mobile App | _(repo terpisah - Flutter)_ | Nasabah                    |
 
 ---
 
-## 🗂️ Fitur Utama
+## Keunggulan Sistem
+
+**Loker Barcode Terintegrasi**
+Setiap barang jaminan disimpan di loker khusus dan diberi label barcode unik. Satu kali scan, seluruh informasi barang — pemilik, detail transaksi, dan status gadai — langsung teridentifikasi.
+
+**Pencairan Hari Ini**
+Proses pengajuan gadai dirancang efisien sehingga nasabah dapat menerima dana di hari yang sama tanpa proses berbelit.
+
+**Taksiran Transparan**
+Nilai taksiran dihitung langsung di depan nasabah dengan acuan yang terstandarisasi, membangun kepercayaan dan menghindari sengketa nilai.
+
+---
+
+## Teknologi yang Dipakai
+
+| Layer              | Teknologi         |
+| ------------------ | ----------------- |
+| Backend Framework  | Laravel 12        |
+| Frontend Styling   | Tailwind CSS v4   |
+| UI Interactivity   | Alpine.js         |
+| Build Tool         | Vite              |
+| Database           | MySQL 8.0         |
+| Admin Template     | TailAdmin Laravel |
+| Development Server | Laragon           |
+
+---
+
+## Role Pengguna
+
+| Role         | Platform   | Akses                                                                                 |
+| ------------ | ---------- | ------------------------------------------------------------------------------------- |
+| `superadmin` | Web        | Kepala outlet / direktur — akses penuh seluruh sistem dan semua cabang                |
+| `admin`      | Web        | Pimpinan cabang — mengelola data dan transaksi cabang masing-masing                   |
+| `officer`    | Web        | Petugas front office, kasir, dan juru taksir                                          |
+| `nasabah`    | Mobile App | Pembayaran perpanjangan / pelunasan, booking kunjungan, riwayat transaksi via Flutter |
+
+---
+
+## Fitur Utama
 
 ### Landing Page
 
-- Hero slider 3 slide dengan animasi fade
-- Profil perusahaan dan layanan gadai
-- Alur proses gadai step-by-step
+- Hero slider 3 slide dengan animasi transisi dan navigasi dots
+- Statistik perusahaan dengan animasi counter
+- Profil perusahaan dan layanan gadai yang diterima
+- Alur proses gadai step-by-step yang interaktif
+- Highlight keunggulan sistem (loker barcode, pencairan cepat, taksiran transparan)
 - Preview aplikasi mobile dengan mockup slider
-- Lokasi cabang
+- Informasi lokasi cabang
 - Syarat & ketentuan gadai
-- FAQ
+- FAQ accordion
 - Formulir kontak
-- Animasi scroll fade-up dan grid pattern background
+- Animasi scroll fade-up dan grid pattern background khas BATIM GADAI
 
-### Backend (Admin Panel)
+### Backend - Admin Panel
 
-- Dashboard statistik dengan grafik
+- Dashboard statistik dengan grafik transaksi dan pendapatan
 - Manajemen data nasabah
 - Manajemen transaksi gadai (pengajuan, perpanjangan, pelunasan)
+- Sistem loker barcode untuk identifikasi barang jaminan
 - Manajemen officer dan cabang
-- Sistem loker barcode barang jaminan
 - Role-based access control (Superadmin / Admin / Officer)
 - Dark mode support
 
 ---
 
-## 👨‍💻 Tim Pengembang
+## Tim Pengembang
 
-Proyek ini dikembangkan oleh mahasiswa **Teknik Informatika, Politeknik Negeri Jember** angkatan 2024.
+Dikembangkan oleh mahasiswa **D4 Teknik Informatika, Politeknik Negeri Jember** - Kelompok 1 Golongan C.
 
 | Peran   | Nama                        | NIM       | GitHub                                                         |
 | ------- | --------------------------- | --------- | -------------------------------------------------------------- |
@@ -92,10 +108,10 @@ Proyek ini dikembangkan oleh mahasiswa **Teknik Informatika, Politeknik Negeri J
 
 ---
 
-## 📄 Lisensi
+## Lisensi
 
 Proyek ini dikembangkan untuk memenuhi tugas akhir semester akademik dan membantu operasional **PT Bintang Timur**. Seluruh hak cipta dilindungi.
 
 ---
 
-> Dikembangkan dengan ❤️ oleh Tim Kelompok 1 Golongan C — Politeknik Negeri Jember 2026
+<p align="center">Dikembangkan dengan ❤️ oleh Tim Kelompok 1 Golongan C &nbsp;·&nbsp; Politeknik Negeri Jember 2026</p>
