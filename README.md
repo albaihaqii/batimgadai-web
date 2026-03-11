@@ -15,9 +15,11 @@
 
 ---
 
-## Tentang Proyek
+## 🏦 Tentang Proyek
 
-**BATIM GADAI** adalah sistem informasi gadai elektronik yang dirancang untuk mendigitalisasi seluruh alur operasional pegadaian swasta — mulai dari pencatatan pengajuan gadai, taksiran barang, pengelolaan data nasabah, perpanjangan, hingga pelunasan gadai. Sistem ini hadir untuk menggantikan proses manual yang rentan terhadap kesalahan pencatatan dan keterlambatan informasi, sehingga seluruh operasional dapat berjalan lebih cepat, akurat, dan terpantau secara real-time.
+<p align="justify">
+<strong>BATIM GADAI</strong> adalah sistem informasi gadai elektronik yang dirancang untuk mendigitalisasi seluruh alur operasional pegadaian swasta, mulai dari pencatatan pengajuan gadai, taksiran barang, pengelolaan data nasabah, perpanjangan, hingga pelunasan gadai. Sistem ini hadir untuk menggantikan proses manual yang rentan terhadap kesalahan pencatatan dan keterlambatan informasi, sehingga seluruh operasional dapat berjalan lebih cepat, akurat, dan terpantau secara real-time.
+</p>
 
 Platform digital BATIM GADAI terdiri dari dua komponen utama:
 
@@ -28,20 +30,23 @@ Platform digital BATIM GADAI terdiri dari dua komponen utama:
 
 ---
 
-## Keunggulan Sistem
+## ✨ Keunggulan Sistem
 
-**Loker Barcode Terintegrasi**
-Setiap barang jaminan disimpan di loker khusus dan diberi label barcode unik. Satu kali scan, seluruh informasi barang — pemilik, detail transaksi, dan status gadai — langsung teridentifikasi.
+**🏷️ Loker Barcode Terintegrasi**
 
-**Pencairan Hari Ini**
-Proses pengajuan gadai dirancang efisien sehingga nasabah dapat menerima dana di hari yang sama tanpa proses berbelit.
+<p align="justify">Setiap barang jaminan disimpan di loker khusus dan diberi label barcode unik. Satu kali scan, seluruh informasi barang, pemilik, detail transaksi, dan status gadai langsung teridentifikasi.</p>
 
-**Taksiran Transparan**
-Nilai taksiran dihitung langsung di depan nasabah dengan acuan yang terstandarisasi, membangun kepercayaan dan menghindari sengketa nilai.
+**⚡ Pencairan Hari Ini**
+
+<p align="justify">Proses pengajuan gadai dirancang efisien sehingga nasabah dapat menerima dana di hari yang sama tanpa proses berbelit.</p>
+
+**📊 Taksiran Transparan**
+
+<p align="justify">Nilai taksiran dihitung langsung di depan nasabah dengan acuan yang terstandarisasi, membangun kepercayaan dan menghindari sengketa nilai.</p>
 
 ---
 
-## Teknologi yang Dipakai
+## 🛠️ Teknologi yang Dipakai
 
 | Layer              | Teknologi         |
 | ------------------ | ----------------- |
@@ -55,18 +60,18 @@ Nilai taksiran dihitung langsung di depan nasabah dengan acuan yang terstandaris
 
 ---
 
-## Role Pengguna
+## 🔐 Role Pengguna
 
 | Role         | Platform   | Akses                                                                                 |
 | ------------ | ---------- | ------------------------------------------------------------------------------------- |
 | `superadmin` | Web        | Kepala outlet / direktur — akses penuh seluruh sistem dan semua cabang                |
-| `admin`      | Web        | Pimpinan cabang — mengelola data dan transaksi cabang masing-masing                   |
+| `admin`      | Web        | Pimpinan cabang - mengelola data dan transaksi cabang masing-masing                   |
 | `officer`    | Web        | Petugas front office, kasir, dan juru taksir                                          |
 | `nasabah`    | Mobile App | Pembayaran perpanjangan / pelunasan, booking kunjungan, riwayat transaksi via Flutter |
 
 ---
 
-## Fitur Utama
+## 📋 Fitur Utama
 
 ### Landing Page
 
@@ -94,9 +99,9 @@ Nilai taksiran dihitung langsung di depan nasabah dengan acuan yang terstandaris
 
 ---
 
-## Tim Pengembang
+## 👨‍💻 Tim Pengembang
 
-Dikembangkan oleh mahasiswa **D4 Teknik Informatika, Politeknik Negeri Jember** - Kelompok 1 Golongan C.
+Dikembangkan oleh mahasiswa **D4 Teknik Informatika, Politeknik Negeri Jember** angkatan 2024 - Kelompok 1 Golongan C.
 
 | Peran   | Nama                        | NIM       | GitHub                                                         |
 | ------- | --------------------------- | --------- | -------------------------------------------------------------- |
@@ -108,7 +113,7 @@ Dikembangkan oleh mahasiswa **D4 Teknik Informatika, Politeknik Negeri Jember** 
 
 ---
 
-## Lisensi
+## 📄 Lisensi
 
 Proyek ini dikembangkan untuk memenuhi tugas akhir semester akademik dan membantu operasional **PT Bintang Timur**. Seluruh hak cipta dilindungi.
 
