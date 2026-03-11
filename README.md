@@ -1,420 +1,101 @@
-# TailAdmin Laravel - Tailwind CSS Free Laravel Dashboard
+# BATIM GADAI — Sistem Informasi Gadai Elektronik
 
-**TailAdmin Laravel** is a modern, production-ready admin dashboard template powered by **Laravel 12**, **Tailwind CSS v4**, **Alpine.js**, and a clean, modular architecture. TailAdmin is one of the most popular Tailwind CSS dashboard now also available for Larvael. It’s designed for building fast, scalable admin panels, CRM dashboards, SaaS backends, and any data-driven application where clarity and performance matter.
-![TailAdmin - Next.js Dashboard Preview](./tailadmin-laravel.png)
+> Sistem Informasi berbasis web untuk pengelolaan transaksi gadai barang elektronik dan barang bergerak secara terkomputerisasi, dikembangkan untuk **PT Bintang Timur**.
 
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=for-the-badge&logo=alpinedotjs&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
-## Quick Links
+---
 
-* [✨ Get TailAdmin Laravel](https://tailadmin.com/laravel)
-* [📄 Documentation](https://tailadmin.com/docs)
-* [⬇️ Download](https://tailadmin.com/download)
-* [🌐 Live Demo](https://laravel-demo.tailadmin.com)
+## 📖 Tentang Proyek
 
-Here’s a tighter, more search-friendly version that highlights value and avoids fluff while keeping your structure intact.
+**BATIM GADAI** adalah sistem informasi gadai elektronik yang dirancang untuk membantu pengelolaan operasional pegadaian secara digital. Sistem ini membantu pengelolaan operasional pegadaian swasta dan menggantikan proses manual dalam pencatatan transaksi gadai, pengelolaan data nasabah, taksiran barang, perpanjangan, hingga pelunasan gadai.
 
-## ✨ Key Features
+Sistem ini merupakan bagian dari platform digital BATIM GADAI yang terdiri dari:
 
-* 🚀 **Laravel 12 Core** - Built on the latest Laravel release with improved routing, security, and Blade templating
-* 🎨 **Tailwind CSS v4** - Utility-first styling for rapid, consistent UI development
-* ⚡ **Alpine.js Interactivity** - Lightweight reactivity without a heavy JavaScript framework
-* 📦 **Vite Build System** - Fast dev server, instant HMR, and optimized production builds
-* 📱 **Fully Responsive Layouts** - Smooth, mobile-first design that adapts across all screen sizes
-* 🌙 **Built-in Dark Mode** - Ready-to-use modern dark theme for better usability and aesthetics
-* 📊 **Advanced UI Components** - Charts, data tables, forms, calendars, modals, and reusable blocks for complex dashboards
-* 🎯 **Production-Ready Dashboard UI** - Clean, modern interface crafted for real apps, not placeholder demos
+- **Web System** _(repo ini)_ — untuk superadmin, admin, dan officer
+- **Mobile App** _(repo terpisah)_ — untuk nasabah berbasis Flutter
 
-### Other Versions
+### Keunggulan Sistem
 
-- [Next.js Version](https://github.com/TailAdmin/free-nextjs-admin-dashboard)
-- [React.js Version](https://github.com/TailAdmin/free-react-tailwind-admin-dashboard)
-- [Vue.js Version](https://github.com/TailAdmin/vue-tailwind-admin-dashboard)
-- [Angular Version](https://github.com/TailAdmin/free-angular-tailwind-dashboard)
-- [Laravel Version](https://github.com/TailAdmin/tailadmin-laravel)
+- 🏷️ **Loker Barcode** — Barang jaminan disimpan di loker khusus dengan sistem barcode terintegrasi. Setiap barang dapat diidentifikasi pemilik dan detailnya hanya dengan scan barcode.
+- ⚡ **Pencairan Hari Ini** — Proses gadai cepat dengan dana cair di hari yang sama saat pengajuan.
+- 📊 **Taksiran Transparan** — Nilai taksiran dihitung langsung di depan nasabah.
 
-## 📋 Requirements
-To set up TailAdmin Laravel, make sure your environment includes:
+---
 
-* **PHP 8.2+**
-* **Composer** (PHP dependency manager)
-* **Node.js 18+** and **npm** (for compiling frontend assets)
-* **Database** - Works with SQLite (default), MySQL, or PostgreSQL
+## 🧱 Teknologi
 
-### Tailwind CSS Laravel Dashboard
+| Layer                  | Teknologi         |
+| ---------------------- | ----------------- |
+| Backend Framework      | Laravel 12        |
+| Frontend Styling       | Tailwind CSS v4   |
+| Frontend Interactivity | Alpine.js         |
+| Build Tool             | Vite              |
+| Database               | MySQL             |
+| Admin Template         | TailAdmin Laravel |
+| Server Lokal           | Laragon           |
 
-TailAdmin delivers a refined Tailwind CSS Laravel Dashboard experience, combining Laravel’s robust backend with Tailwind’s flexible utility classes. The result is a clean, fast, and customizable dashboard that helps developers build modern admin interfaces without the usual front-end complexity. It’s ideal for teams looking for a Tailwind-powered Laravel starter that stays lightweight and easy to scale.
+---
 
-### Laravel Admin Dashboard
+## 👥 Role Pengguna
 
-If you’re searching for a dependable Laravel Admin Dashboard template that’s easy to set up and ready for production, TailAdmin fits the job. It offers a polished UI, reusable components, optimized performance, and all the essentials needed to launch dashboards, CRM systems, and internal tools quickly. It gives developers a solid foundation, so projects move faster with fewer decisions to worry about.
+| Role         | Akses      | Deskripsi                                             |
+| ------------ | ---------- | ----------------------------------------------------- |
+| `superadmin` | Web        | Kepala outlet / direktur — akses penuh seluruh sistem |
+| `admin`      | Web        | Pimpinan cabang — kelola data cabang masing-masing    |
+| `officer`    | Web        | Petugas front office, kasir, juru taksir              |
+| `nasabah`    | Mobile App | Akses via aplikasi Flutter _(repo terpisah)_          |
 
-### Check Your Environment
+---
 
-Verify your installations:
+## 🗂️ Fitur Utama
 
-```bash
-php -v
-composer -V
-node -v
-npm -v
-```
+### Landing Page
 
-## 🚀 Quick Start Installation
+- Hero slider 3 slide dengan animasi fade
+- Profil perusahaan dan layanan gadai
+- Alur proses gadai step-by-step
+- Preview aplikasi mobile dengan mockup slider
+- Lokasi cabang
+- Syarat & ketentuan gadai
+- FAQ
+- Formulir kontak
+- Animasi scroll fade-up dan grid pattern background
 
-### Step 1: Clone the Repository
+### Backend (Admin Panel)
 
-```bash
-git clone https://github.com/TailAdmin/tailadmin-laravel.git
-cd tailadmin-laravel
-```
+- Dashboard statistik dengan grafik
+- Manajemen data nasabah
+- Manajemen transaksi gadai (pengajuan, perpanjangan, pelunasan)
+- Manajemen officer dan cabang
+- Sistem loker barcode barang jaminan
+- Role-based access control (Superadmin / Admin / Officer)
+- Dark mode support
 
-### Step 2: Install PHP Dependencies
+---
 
-```bash
-composer install
-```
+## 👨‍💻 Tim Pengembang
 
-This command will install all Laravel dependencies defined in `composer.json`.
+Proyek ini dikembangkan oleh mahasiswa **Teknik Informatika, Politeknik Negeri Jember** angkatan 2024.
 
-### Step 3: Install Node.js Dependencies
+| Peran   | Nama                        | NIM       | GitHub                                                         |
+| ------- | --------------------------- | --------- | -------------------------------------------------------------- |
+| Ketua   | Yohanes Fabian S            | E41241212 | [@yhfabian](https://github.com/yhfabian)                       |
+| Anggota | Faiq Raihan Albaihaqi       | E41241011 | [@faiqraihanalbaihaqi](https://github.com/faiqraihanalbaihaqi) |
+| Anggota | Abdillah Aziz Putra Susan   | E41241208 | [@azizaan](https://github.com/azizaan)                         |
+| Anggota | Alviansyah Nurhidayat Yahya | E41241155 | [@alviansyahny](https://github.com/alviansyahny)               |
+| Anggota | Juliana Intan Purwaningtyas | E41241036 | [@tintuntan06-dotcom](https://github.com/tintuntan06-dotcom)   |
 
-```bash
-npm install
-```
+---
 
-Or if you prefer yarn or pnpm:
+## 📄 Lisensi
 
-```bash
-# Using yarn
-yarn install
+Proyek ini dikembangkan untuk memenuhi tugas akhir semester akademik dan membantu operasional **PT Bintang Timur**. Seluruh hak cipta dilindungi.
 
-# Using pnpm
-pnpm install
-```
+---
 
-### Step 4: Environment Configuration
-
-Copy the example environment file:
-
-```bash
-cp .env.example .env
-```
-
-**For Windows users:**
-
-```bash
-copy .env.example .env
-```
-
-**Or create it programmatically:**
-
-```bash
-php -r "file_exists('.env') || copy('.env.example', '.env');"
-```
-
-### Step 5: Generate Application Key
-
-```bash
-php artisan key:generate
-```
-
-This creates a unique encryption key for your application.
-
-### Step 6: Configure Database
-
-#### Option A: Using MySQL/PostgreSQL
-
-Update your `.env` file with your database credentials:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=tailadmin_db
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-```
-
-Create the database:
-
-```bash
-# MySQL
-mysql -u root -p -e "CREATE DATABASE tailadmin_db;"
-
-# PostgreSQL
-createdb tailadmin_db
-```
-
-Run migrations:
-
-```bash
-php artisan migrate
-```
-
-### Step 7: (Optional) Seed the Database
-
-If you want sample data:
-
-```bash
-php artisan db:seed
-```
-
-### Step 8: Storage Link
-
-Create a symbolic link for file storage:
-
-```bash
-php artisan storage:link
-```
-
-## 🏃 Running the Application
-
-### Development Mode (Recommended)
-
-The easiest way to start development is using the built-in script:
-
-```bash
-composer run dev
-```
-
-This single command starts:
-- ✅ Laravel development server (http://localhost:8000)
-- ✅ Vite dev server for hot module reloading
-- ✅ Queue worker for background jobs
-- ✅ Log monitoring
-
-**Access your application at:** [http://localhost:8000](http://localhost:8000)
-
-### Manual Development Setup
-
-If you prefer to run services individually in separate terminal windows:
-
-**Terminal 1 - Laravel Server:**
-```bash
-php artisan serve
-```
-
-**Terminal 2 - Frontend Assets:**
-```bash
-npm run dev
-```
-
-### Building for Production
-
-#### Build Frontend Assets
-
-```bash
-npm run build
-```
-
-#### Optimize Laravel
-
-```bash
-# Clear and cache configuration
-php artisan config:cache
-
-# Cache routes
-php artisan route:cache
-
-# Cache views
-php artisan view:cache
-
-# Optimize autoloader
-composer install --optimize-autoloader --no-dev
-```
-
-#### Production Environment
-
-Update your `.env` for production:
-
-```env
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://yourdomain.com
-```
-
-
-## 🧪 Testing
-
-Run the test suite using Pest:
-
-```bash
-composer run test
-```
-
-Or manually:
-
-```bash
-php artisan test
-```
-
-Run with coverage:
-
-```bash
-php artisan test --coverage
-```
-
-Run specific tests:
-
-```bash
-php artisan test --filter=ExampleTest
-```
-
-## 📜 Available Commands
-
-### Composer Scripts
-
-```bash
-# Start development environment
-composer run dev
-
-# Run tests
-composer run test
-
-# Code formatting (if configured)
-composer run format
-
-# Static analysis (if configured)
-composer run analyze
-```
-
-### NPM Scripts
-
-```bash
-# Start Vite dev server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Lint JavaScript/TypeScript
-npm run lint
-
-# Format code
-npm run format
-```
-
-### Artisan Commands
-
-```bash
-# Start development server
-php artisan serve
-
-# Run migrations
-php artisan migrate
-
-# Rollback migrations
-php artisan migrate:rollback
-
-# Fresh migrations with seeding
-php artisan migrate:fresh --seed
-
-# Generate application key
-php artisan key:generate
-
-# Clear all caches
-php artisan optimize:clear
-
-# Cache everything for production
-php artisan optimize
-
-# Create symbolic link for storage
-php artisan storage:link
-
-# Start queue worker
-php artisan queue:work
-
-# List all routes
-php artisan route:list
-
-# Create a new controller
-php artisan make:controller YourController
-
-# Create a new model
-php artisan make:model YourModel -m
-
-# Create a new migration
-php artisan make:migration create_your_table
-```
-
-## 📁 Project Structure
-
-```
-tailadmin-laravel/
-├── app/                    # Application logic
-│   ├── Http/              # Controllers, Middleware, Requests
-│   ├── Models/            # Eloquent models
-│   └── Providers/         # Service providers
-├── bootstrap/             # Framework bootstrap files
-├── config/                # Configuration files
-├── database/              # Migrations, seeders, factories
-│   ├── migrations/
-│   ├── seeders/
-│   └── factories/
-├── public/                # Public assets (entry point)
-│   ├── build/            # Compiled assets (generated)
-│   └── index.php         # Application entry point
-├── resources/             # Views and raw assets
-│   ├── css/              # Stylesheets (Tailwind)
-│   ├── js/               # JavaScript files (Alpine.js)
-│   └── views/            # Blade templates
-├── routes/                # Route definitions
-│   ├── web.php           # Web routes
-│   ├── api.php           # API routes
-│   └── console.php       # Console routes
-├── storage/               # Logs, cache, uploads
-│   ├── app/
-│   ├── framework/
-│   └── logs/
-├── tests/                 # Pest test files
-│   ├── Feature/
-│   └── Unit/
-├── .env.example           # Example environment file
-├── artisan                # Artisan CLI
-├── composer.json          # PHP dependencies
-├── package.json           # Node dependencies
-├── vite.config.js         # Vite configuration
-└── tailwind.config.js     # Tailwind configuration
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### "Class not found" errors
-```bash
-composer dump-autoload
-```
-
-#### Permission errors on storage/bootstrap/cache
-```bash
-chmod -R 775 storage bootstrap/cache
-```
-
-#### NPM build errors
-```bash
-rm -rf node_modules package-lock.json
-npm install
-```
-
-#### Clear all caches
-```bash
-php artisan optimize:clear
-```
-
-#### Database connection errors
-- Check `.env` database credentials
-- Ensure database server is running
-- Verify database exists
-
-## 🔄 Update Log
-
-### [2025-12-29]
-- Added Date Picker in Statistics Chart
-
-## License
-
-Refer to our [LICENSE](https://tailadmin.com/license) page for more information.
+> Dikembangkan dengan ❤️ oleh Tim Kelompok 1 Golongan C — Politeknik Negeri Jember 2026
