@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Dashboard' }} | TailAdmin - Laravel Tailwind CSS Admin Dashboard Template</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}?v=2">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('favicon-192.png') }}?v=2">
+    <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('favicon-512.png') }}?v=2">
+    <link rel="shortcut icon" href="{{ asset('favicon-32.png') }}?v=2">
+    <title>BATIM GADAI - Sistem Informasi Gadai Elektronik</title>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -63,15 +63,22 @@
         :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
         'xl:justify-center' :
         'justify-start'">
-        <a href="/">
-            <img x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" width="150" height="40" />
-            <img x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                class="hidden dark:block" src="/images/logo/logo-dark.svg" alt="Logo" width="150"
-                height="40" />
-            <img x-show="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen"
-                src="/images/logo/logo-icon.svg" alt="Logo" width="32" height="32" />
-
+        <a href="{{ route('home') }}" class="flex items-center gap-2.5">
+            {{-- Logo expanded --}}
+            <div x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                class="flex items-center gap-2.5">
+                <img src="{{ asset('frontend/images/logo.png') }}" alt="BATIM GADAI" class="h-8 w-auto"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="hidden h-8 w-8 items-center justify-center rounded-lg bg-brand-500">
+                    <span class="text-white font-bold text-xs">BG</span>
+                </div>
+                <span class="font-bold text-base text-gray-900 dark:text-white">BATIM GADAI</span>
+            </div>
+            {{-- Logo collapsed (icon only) --}}
+            <div x-show="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen">
+                <img src="{{ asset('frontend/images/logo.png') }}" alt="BG" class="h-8 w-8 rounded-lg object-contain"
+                    onerror="this.style.display='none'">
+            </div>
         </a>
     </div>
 
