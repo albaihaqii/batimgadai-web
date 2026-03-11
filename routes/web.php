@@ -2,9 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuthController;
+
+// Authentication
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// landing pages
+Route::get('/', fn() => view('frontend.index'))->name('home');
 
 // dashboard pages
-Route::get('/', function () {
+Route::get('/dashboard', function () {
     return view('pages.dashboard.ecommerce', ['title' => 'E-commerce Dashboard']);
 })->name('dashboard');
 

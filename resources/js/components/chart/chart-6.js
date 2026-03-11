@@ -22,7 +22,7 @@ export function initChartSix() {
                     data: [21, 7, 25, 13, 22, 8, 18, 20],
                 },
             ],
-            colors: ["#2a31d8", "#465fff", "#7592ff", "#c2d6ff"],
+            colors: ["#174a2e", "#1F5C3A", "#4a8c5c", "#d4edaa"],
             chart: {
                 fontFamily: "Outfit, sans-serif",
                 type: "bar",
