@@ -1,24 +1,22 @@
-
-
 export function initChartSix() {
-    const chartSixEl = document.querySelector('#chartSix');
+    const chartSixEl = document.querySelector("#chartSix");
     if (chartSixEl) {
         const chartSixOptions = {
             series: [
                 {
-                    name: "Direct",
+                    name: "Gadai",
                     data: [44, 55, 41, 67, 22, 43, 55, 41],
                 },
                 {
-                    name: "Referral",
+                    name: "Perpanjangan",
                     data: [13, 23, 20, 8, 13, 27, 13, 23],
                 },
                 {
-                    name: "Organic Search",
+                    name: "Pelunasan",
                     data: [11, 17, 15, 15, 21, 14, 18, 20],
                 },
                 {
-                    name: "Social",
+                    name: "Jatuh Tempo",
                     data: [21, 7, 25, 13, 22, 8, 18, 20],
                 },
             ],
@@ -48,7 +46,16 @@ export function initChartSix() {
                 enabled: false,
             },
             xaxis: {
-                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+                categories: [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                ],
                 axisBorder: {
                     show: false,
                 },
