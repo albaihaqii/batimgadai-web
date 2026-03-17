@@ -23,6 +23,13 @@ Route::prefix('superadmin')
         Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
         Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
         Route::put('/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('password.update');
+
+        Route::get('/nasabah', [App\Http\Controllers\CustomerController::class, 'index'])->name('nasabah');
+        Route::get('/nasabah/tambah', [App\Http\Controllers\CustomerController::class, 'create'])->name('nasabah.create');
+        Route::post('/nasabah', [App\Http\Controllers\CustomerController::class, 'store'])->name('nasabah.store');
+        Route::get('/nasabah/{customer}/edit', [App\Http\Controllers\CustomerController::class, 'edit'])->name('nasabah.edit');
+        Route::put('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'update'])->name('nasabah.update');
+        Route::delete('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'destroy'])->name('nasabah.destroy');
     });
 
 // Admin
@@ -35,18 +42,32 @@ Route::prefix('admin')
         Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
         Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
         Route::put('/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('password.update');
+
+        Route::get('/nasabah', [App\Http\Controllers\CustomerController::class, 'index'])->name('nasabah');
+        Route::get('/nasabah/tambah', [App\Http\Controllers\CustomerController::class, 'create'])->name('nasabah.create');
+        Route::post('/nasabah', [App\Http\Controllers\CustomerController::class, 'store'])->name('nasabah.store');
+        Route::get('/nasabah/{customer}/edit', [App\Http\Controllers\CustomerController::class, 'edit'])->name('nasabah.edit');
+        Route::put('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'update'])->name('nasabah.update');
+        Route::delete('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'destroy'])->name('nasabah.destroy');
     });
 
 // Officer
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware(['auth', 'role:admin'])
+Route::prefix('officer')
+    ->name('officer.')
+    ->middleware(['auth', 'role:officer'])
     ->group(function () {
-        Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+        Route::get('/dashboard', fn() => view('officer.dashboard'))->name('dashboard');
         Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
         Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
         Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
         Route::put('/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('password.update');
+
+        Route::get('/nasabah', [App\Http\Controllers\CustomerController::class, 'index'])->name('nasabah');
+        Route::get('/nasabah/tambah', [App\Http\Controllers\CustomerController::class, 'create'])->name('nasabah.create');
+        Route::post('/nasabah', [App\Http\Controllers\CustomerController::class, 'store'])->name('nasabah.store');
+        Route::get('/nasabah/{customer}/edit', [App\Http\Controllers\CustomerController::class, 'edit'])->name('nasabah.edit');
+        Route::put('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'update'])->name('nasabah.update');
+        Route::delete('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'destroy'])->name('nasabah.destroy');
     });
 
 // TailAdmin Demo (development only)
