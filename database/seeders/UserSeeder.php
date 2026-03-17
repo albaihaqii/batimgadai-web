@@ -10,6 +10,10 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        $smg = DB::table('cabang')->where('kode', 'SMG')->value('id');
+        $mgl = DB::table('cabang')->where('kode', 'MGL')->value('id');
+        $krm = DB::table('cabang')->where('kode', 'KRM')->value('id');
+
         DB::table('users')->insert([
 
             [
@@ -28,7 +32,7 @@ class UserSeeder extends Seeder
                 'email'      => 'admin.semanggi@batimgadai.com',
                 'password'   => Hash::make('password123'),
                 'role'       => 'admin',
-                'cabang_id'  => null,
+                'cabang_id'  => $smg,
                 'status'     => 'aktif',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -38,7 +42,7 @@ class UserSeeder extends Seeder
                 'email'      => 'admin.mangli@batimgadai.com',
                 'password'   => Hash::make('password123'),
                 'role'       => 'admin',
-                'cabang_id'  => null,
+                'cabang_id'  => $mgl,
                 'status'     => 'aktif',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -48,7 +52,7 @@ class UserSeeder extends Seeder
                 'email'      => 'admin.karimata@batimgadai.com',
                 'password'   => Hash::make('password123'),
                 'role'       => 'admin',
-                'cabang_id'  => null,
+                'cabang_id'  => $krm,
                 'status'     => 'aktif',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -59,7 +63,7 @@ class UserSeeder extends Seeder
                 'email'      => 'officer1@batimgadai.com',
                 'password'   => Hash::make('password123'),
                 'role'       => 'officer',
-                'cabang_id'  => null,
+                'cabang_id'  => $smg,
                 'status'     => 'aktif',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -69,7 +73,7 @@ class UserSeeder extends Seeder
                 'email'      => 'officer2@batimgadai.com',
                 'password'   => Hash::make('password123'),
                 'role'       => 'officer',
-                'cabang_id'  => null,
+                'cabang_id'  => $mgl,
                 'status'     => 'aktif',
                 'created_at' => now(),
                 'updated_at' => now(),
