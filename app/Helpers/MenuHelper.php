@@ -42,12 +42,12 @@ class MenuHelper
                     [
                         'icon' => 'user-profile',
                         'name' => 'Data Pimpinan',
-                        'path' => '/superadmin/admin',
+                        'path' => '/superadmin/pimpinan',
                     ],
                     [
                         'icon' => 'user-profile',
                         'name' => 'Data Petugas',
-                        'path' => '/superadmin/officer',
+                        'path' => '/superadmin/petugas',
                     ],
                 ],
             ],
@@ -129,7 +129,7 @@ class MenuHelper
                     [
                         'icon' => 'user-profile',
                         'name' => 'Data Petugas',
-                        'path' => '/admin/officer',
+                        'path' => '/admin/petugas',
                     ],
                 ],
             ],

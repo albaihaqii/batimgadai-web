@@ -32,6 +32,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function branch()
+    {
+        return $this->belongsTo(\App\Models\Branch::class, 'cabang_id');
+    }
+
     public function isSuperadmin(): bool
     {
         return $this->role === 'superadmin';
