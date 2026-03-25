@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             BranchSeeder::class,
             UserSeeder::class,
             CustomerSeeder::class,
+            LockerSeeder::class,
         ]);
     }
 }

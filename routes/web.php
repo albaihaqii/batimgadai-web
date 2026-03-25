@@ -13,6 +13,9 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
+// Scan QR Loker
+Route::get('/loker/{kode_loker}', [App\Http\Controllers\LockerController::class, 'scan'])->name('loker.scan');
+
 // Superadmin
 Route::prefix('superadmin')
     ->name('superadmin.')
@@ -44,6 +47,70 @@ Route::prefix('superadmin')
         Route::get('/petugas/{officer}/edit', [App\Http\Controllers\OfficerController::class, 'edit'])->name('petugas.edit');
         Route::put('/petugas/{officer}', [App\Http\Controllers\OfficerController::class, 'update'])->name('petugas.update');
         Route::delete('/petugas/{officer}', [App\Http\Controllers\OfficerController::class, 'destroy'])->name('petugas.destroy');
+
+        Route::get('/cabang', [App\Http\Controllers\BranchController::class, 'index'])->name('cabang');
+        Route::get('/cabang/tambah', [App\Http\Controllers\BranchController::class, 'create'])->name('cabang.create');
+        Route::post('/cabang', [App\Http\Controllers\BranchController::class, 'store'])->name('cabang.store');
+        Route::get('/cabang/{branch}/edit', [App\Http\Controllers\BranchController::class, 'edit'])->name('cabang.edit');
+        Route::put('/cabang/{branch}', [App\Http\Controllers\BranchController::class, 'update'])->name('cabang.update');
+        Route::delete('/cabang/{branch}', [App\Http\Controllers\BranchController::class, 'destroy'])->name('cabang.destroy');
+
+        Route::get('/loker', [App\Http\Controllers\LockerController::class, 'index'])->name('loker');
+        Route::get('/loker/tambah', [App\Http\Controllers\LockerController::class, 'create'])->name('loker.create');
+        Route::post('/loker', [App\Http\Controllers\LockerController::class, 'store'])->name('loker.store');
+        Route::delete('/loker/{locker}', [App\Http\Controllers\LockerController::class, 'destroy'])->name('loker.destroy');
+    });
+
+// Admin
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'role:admin'])
+    ->group(function () {
+        Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+        Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
+        Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
+        Route::put('/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('password.update');
+
+        Route::get('/nasabah', [App\Http\Controllers\CustomerController::class, 'index'])->name('nasabah');
+        Route::get('/nasabah/tambah', [App\Http\Controllers\CustomerController::class, 'create'])->name('nasabah.create');
+        Route::post('/nasabah', [App\Http\Controllers\CustomerController::class, 'store'])->name('nasabah.store');
+        Route::get('/nasabah/{customer}/edit', [App\Http\Controllers\CustomerController::class, 'edit'])->name('nasabah.edit');
+        Route::put('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'update'])->name('nasabah.update');
+        Route::delete('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'destroy'])->name('nasabah.destroy');
+
+        Route::get('/petugas', [App\Http\Controllers\OfficerController::class, 'index'])->name('petugas');
+        Route::get('/petugas/tambah', [App\Http\Controllers\OfficerController::class, 'create'])->name('petugas.create');
+        Route::post('/petugas', [App\Http\Controllers\OfficerController::class, 'store'])->name('petugas.store');
+        Route::get('/petugas/{officer}/edit', [App\Http\Controllers\OfficerController::class, 'edit'])->name('petugas.edit');
+        Route::put('/petugas/{officer}', [App\Http\Controllers\OfficerController::class, 'update'])->name('petugas.update');
+        Route::delete('/petugas/{officer}', [App\Http\Controllers\OfficerController::class, 'destroy'])->name('petugas.destroy');
+
+        Route::get('/loker', [App\Http\Controllers\LockerController::class, 'index'])->name('loker');
+        Route::get('/loker/tambah', [App\Http\Controllers\LockerController::class, 'create'])->name('loker.create');
+        Route::post('/loker', [App\Http\Controllers\LockerController::class, 'store'])->name('loker.store');
+        Route::delete('/loker/{locker}', [App\Http\Controllers\LockerController::class, 'destroy'])->name('loker.destroy');
+    });
+
+// Officer
+Route::prefix('officer')
+    ->name('officer.')
+    ->middleware(['auth', 'role:officer'])
+    ->group(function () {
+        Route::get('/dashboard', fn() => view('officer.dashboard'))->name('dashboard');
+        Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
+        Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
+        Route::put('/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('password.update');
+
+        Route::get('/nasabah', [App\Http\Controllers\CustomerController::class, 'index'])->name('nasabah');
+        Route::get('/nasabah/tambah', [App\Http\Controllers\CustomerController::class, 'create'])->name('nasabah.create');
+        Route::post('/nasabah', [App\Http\Controllers\CustomerController::class, 'store'])->name('nasabah.store');
+        Route::get('/nasabah/{customer}/edit', [App\Http\Controllers\CustomerController::class, 'edit'])->name('nasabah.edit');
+        Route::put('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'update'])->name('nasabah.update');
+        Route::delete('/nasabah/{customer}', [App\Http\Controllers\CustomerController::class, 'destroy'])->name('nasabah.destroy');
+
+        Route::get('/loker', [App\Http\Controllers\LockerController::class, 'index'])->name('loker');
     });
 
 // Admin

@@ -64,7 +64,7 @@ Platform digital BATIM GADAI terdiri dari dua komponen utama:
 
 | Role         | Platform   | Akses                                                                                 |
 | ------------ | ---------- | ------------------------------------------------------------------------------------- |
-| `superadmin` | Web        | Kepala outlet / direktur — akses penuh seluruh sistem dan semua cabang                |
+| `superadmin` | Web        | Kepala outlet / direktur - akses penuh seluruh sistem dan semua cabang                |
 | `admin`      | Web        | Pimpinan cabang - mengelola data dan transaksi cabang masing-masing                   |
 | `officer`    | Web        | Petugas front office, kasir, dan juru taksir                                          |
 | `nasabah`    | Mobile App | Pembayaran perpanjangan / pelunasan, booking kunjungan, riwayat transaksi via Flutter |
