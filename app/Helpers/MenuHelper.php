@@ -61,7 +61,7 @@ class MenuHelper
                     ],
                     [
                         'icon' => 'loker',
-                        'name' => 'Loker Barcode',
+                        'name' => 'Manajemen Loker',
                         'path' => '/superadmin/loker',
                     ],
                 ],
@@ -138,7 +138,7 @@ class MenuHelper
                 'items' => [
                     [
                         'icon' => 'loker',
-                        'name' => 'Loker Barcode',
+                        'name' => 'Manajemen Loker',
                         'path' => '/admin/loker',
                     ],
                 ],
@@ -204,7 +204,7 @@ class MenuHelper
                     ],
                     [
                         'icon' => 'loker',
-                        'name' => 'Loker Barcode',
+                        'name' => 'Manajemen Loker',
                         'path' => '/officer/loker',
                     ],
                 ],

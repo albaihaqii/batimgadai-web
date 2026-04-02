@@ -13,6 +13,7 @@ class Branch extends Model
         'nama',
         'alamat',
         'no_telp',
+        'maps_url',
         'status',
     ];
 
