@@ -44,6 +44,13 @@ Route::prefix('superadmin')
         Route::get('/petugas/{officer}/edit', [App\Http\Controllers\OfficerController::class, 'edit'])->name('petugas.edit');
         Route::put('/petugas/{officer}', [App\Http\Controllers\OfficerController::class, 'update'])->name('petugas.update');
         Route::delete('/petugas/{officer}', [App\Http\Controllers\OfficerController::class, 'destroy'])->name('petugas.destroy');
+
+        Route::get('/cabang', [App\Http\Controllers\CabangController::class, 'index'])->name('cabang');
+        Route::get('/cabang/tambah', [App\Http\Controllers\CabangController::class, 'create'])->name('cabang.create');
+        Route::post('/cabang', [App\Http\Controllers\CabangController::class, 'store'])->name('cabang.store');
+        Route::get('/cabang/{Cabang}/edit', [App\Http\Controllers\CabangController::class, 'edit'])->name('cabang.edit');
+        Route::put('/cabang/{Cabang}', [App\Http\Controllers\CabangController::class, 'update'])->name('cabang.update');
+        Route::delete('/cabang/{Cabang}', [App\Http\Controllers\CabangController::class, 'destroy'])->name('cabang.destroy');
     });
 
 // Admin
