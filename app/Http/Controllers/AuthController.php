@@ -10,8 +10,9 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect()->route($this->dashboardRoute());
+            return redirect()->route('dashboard');
         }
+
         return view('pages.auth.login');
     }
 
@@ -25,8 +26,10 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
 
         if (Auth::attempt($credentials, $remember)) {
+
             $request->session()->regenerate();
-            return redirect()->intended(route($this->dashboardRoute()));
+
+            return redirect()->intended(route('dashboard'));
         }
 
         return back()
@@ -37,18 +40,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login');
-    }
 
-    private function dashboardRoute(): string
-    {
-        return match(Auth::user()->role) {
-            'superadmin' => 'superadmin.dashboard',
-            'admin'      => 'admin.dashboard',
-            'officer'    => 'officer.dashboard',
-            default      => 'login',
-        };
+        return redirect()->route('login');
     }
 }

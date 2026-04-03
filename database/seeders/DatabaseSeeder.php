@@ -15,9 +15,22 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // User::factory()->superadmin()->create([
+        //     'nama' => 'Super Admin',
+        //     'email' => 'superadmin@gmail.com',
+        // ]);
+
+        // User::factory()->admin()->create([
+        //     'nama' => 'Admin Cabang',
+        //     'email' => 'admin@gmail.com',
+        // ]);
+
+        // User::factory()->officer()->create([
+        //     'nama' => 'Officer',
+        //     'email' => 'officer@gmail.com',
+        // ]);
+        $this->call([
+            CategorySeeder::class,
         ]);
     }
 }

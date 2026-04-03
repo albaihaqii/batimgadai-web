@@ -2,99 +2,163 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Auth;
+
 class MenuHelper
 {
-    public static function getMainNavItems()
+    // Menu untuk semua role
+    public static function getDashboardItems()
     {
         return [
             [
                 'icon' => 'dashboard',
                 'name' => 'Dashboard',
+                'path' => '/dashboard',
+            ],
+        ];
+    }
+
+    // Menu Master untuk Superadmin
+    public static function getSuperadminMasterItems()
+    {
+        return [
+            [
+                'icon' => 'task',
+                'name' => 'Master',
                 'subItems' => [
-                    ['name' => 'Ecommerce', 'path' => '/'],
-                ],
-            ],
-            [
-                'icon' => 'calendar',
-                'name' => 'Calendar',
-                'path' => '/calendar',
-            ],
-            [
-                'icon' => 'user-profile',
-                'name' => 'User Profile',
-                'path' => '/profile',
-            ],
-            [
-                'name' => 'Forms',
-                'icon' => 'forms',
-                'subItems' => [
-                    ['name' => 'Form Elements', 'path' => '/form-elements', 'pro' => false],
-                ],
-            ],
-            [
-                'name' => 'Tables',
-                'icon' => 'tables',
-                'subItems' => [
-                    ['name' => 'Basic Tables', 'path' => '/basic-tables', 'pro' => false]
-                ],
-            ],
-            [
-                'name' => 'Pages',
-                'icon' => 'pages',
-                'subItems' => [
-                    ['name' => 'Blank Page', 'path' => '/blank', 'pro' => false],
-                    ['name' => '404 Error', 'path' => '/error-404', 'pro' => false]
+                    ['name' => 'Category', 'path' => '/master/category'],
+                    ['name' => 'Jenis Barang', 'path' => '/master/jenis-barang'],
+                    ['name' => 'Bunga', 'path' => '/master/bunga'],
+                    ['name' => 'Outlets', 'path' => '/master/outlets'],
                 ],
             ],
         ];
     }
 
-    public static function getOthersItems()
+    // Menu Transaksi untuk Superadmin
+    public static function getSuperadminTransactionItems()
+    {
+        return [
+            [
+                'icon' => 'ecommerce',
+                'name' => 'Transaksi',
+                'path' => '/transaksi',
+            ],
+        ];
+    }
+
+    // Menu Laporan untuk Superadmin
+    public static function getSuperadminReportItems()
     {
         return [
             [
                 'icon' => 'charts',
-                'name' => 'Charts',
+                'name' => 'Laporan',
                 'subItems' => [
-                    ['name' => 'Line Chart', 'path' => '/line-chart', 'pro' => false],
-                    ['name' => 'Bar Chart', 'path' => '/bar-chart', 'pro' => false]
+                    ['name' => 'Penjualan', 'path' => '/laporan/penjualan'],
+                    ['name' => 'Keuangan', 'path' => '/laporan/keuangan'],
+                ],
+            ],
+        ];
+    }
+
+    // Menu untuk Admin
+    public static function getAdminMenuItems()
+    {
+        return [
+            [
+                'icon' => 'task',
+                'name' => 'Master',
+                'subItems' => [
+                    ['name' => 'Bunga', 'path' => '/master/bunga'],
                 ],
             ],
             [
-                'icon' => 'ui-elements',
-                'name' => 'UI Elements',
-                'subItems' => [
-                    ['name' => 'Alerts', 'path' => '/alerts', 'pro' => false],
-                    ['name' => 'Avatar', 'path' => '/avatars', 'pro' => false],
-                    ['name' => 'Badge', 'path' => '/badge', 'pro' => false],
-                    ['name' => 'Buttons', 'path' => '/buttons', 'pro' => false],
-                    ['name' => 'Images', 'path' => '/image', 'pro' => false],
-                    ['name' => 'Videos', 'path' => '/videos', 'pro' => false],
-                ],
+                'icon' => 'ecommerce',
+                'name' => 'Transaksi',
+                'path' => '/transaksi',
             ],
+        ];
+    }
+
+    // Menu untuk Officer (minimal)
+    public static function getOfficerMenuItems()
+    {
+        return [
             [
-                'icon' => 'authentication',
-                'name' => 'Authentication',
-                'subItems' => [
-                    ['name' => 'Sign In', 'path' => '/signin', 'pro' => false],
-                    ['name' => 'Sign Up', 'path' => '/signup', 'pro' => false],
-                ],
+                'icon' => 'ecommerce',
+                'name' => 'Transaksi',
+                'path' => '/transaksi',
+            ],
+        ];
+    }
+
+    public static function getMainNavItems()
+    {
+        $user = Auth::user();
+        $role = $user?->role ?? 'guest';
+
+        $items = self::getDashboardItems();
+
+        // Tambah menu berdasarkan role
+        if ($role === 'superadmin') {
+            $items = array_merge(
+                $items,
+                self::getSuperadminMasterItems(),
+                self::getSuperadminTransactionItems(),
+                self::getSuperadminReportItems()
+            );
+        } elseif ($role === 'admin') {
+            $items = array_merge(
+                $items,
+                self::getAdminMenuItems()
+            );
+        } elseif ($role === 'officer') {
+            $items = array_merge(
+                $items,
+                self::getOfficerMenuItems()
+            );
+        }
+
+        return $items;
+    }
+
+    public static function getOthersItems()
+    {
+        // Menu Others hanya untuk superadmin
+        $user = Auth::user();
+        if ($user?->role !== 'superadmin') {
+            return [];
+        }
+
+        return [
+            [
+                'icon' => 'user-profile',
+                'name' => 'Profile',
+                'path' => '/profile',
             ],
         ];
     }
 
     public static function getMenuGroups()
     {
-        return [
+        $menuGroups = [
             [
                 'title' => 'Menu',
                 'items' => self::getMainNavItems()
             ],
-            [
-                'title' => 'Others',
-                'items' => self::getOthersItems()
-            ]
         ];
+
+        // Tambah Others hanya jika ada items
+        $othersItems = self::getOthersItems();
+        if (!empty($othersItems)) {
+            $menuGroups[] = [
+                'title' => 'Others',
+                'items' => $othersItems
+            ];
+        }
+
+        return $menuGroups;
     }
 
     public static function isActive($path)
