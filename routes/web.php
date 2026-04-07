@@ -59,9 +59,20 @@ Route::prefix('superadmin')
         Route::get('/loker/tambah', [App\Http\Controllers\LockerController::class, 'create'])->name('loker.create');
         Route::post('/loker', [App\Http\Controllers\LockerController::class, 'store'])->name('loker.store');
         Route::delete('/loker/{locker}', [App\Http\Controllers\LockerController::class, 'destroy'])->name('loker.destroy');
-    });
 
-// Admin
+        // Transactions
+        Route::get('/transaksi', [App\Http\Controllers\SuperadminTransactionController::class, 'index'])->name('transactions');
+        Route::get('/transaksi/gadai', [App\Http\Controllers\SuperadminTransactionController::class, 'pawn'])->name('transactions.pawn');
+        Route::get('/transaksi/gadai/tambah', [App\Http\Controllers\SuperadminTransactionController::class, 'createPawn'])->name('transactions.pawn.create');
+        Route::post('/transaksi/gadai', [App\Http\Controllers\SuperadminTransactionController::class, 'storePawn'])->name('transactions.pawn.store');
+        Route::get('/transaksi/gadai/{id}', [App\Http\Controllers\SuperadminTransactionController::class, 'showPawn'])->name('transactions.show_pawn');
+        Route::get('/transaksi/gadai/{id}/edit', [App\Http\Controllers\SuperadminTransactionController::class, 'editPawn'])->name('transactions.pawn.edit');
+        Route::put('/transaksi/gadai/{id}', [App\Http\Controllers\SuperadminTransactionController::class, 'updatePawn'])->name('transactions.pawn.update');
+        Route::delete('/transaksi/gadai/{id}', [App\Http\Controllers\SuperadminTransactionController::class, 'destroyPawn'])->name('transactions.pawn.destroy');
+        Route::put('/transaksi/gadai/{id}/status', [App\Http\Controllers\SuperadminTransactionController::class, 'updatePawnStatus'])->name('transactions.update_pawn_status');
+        Route::get('/transaksi/perpanjangan', [App\Http\Controllers\SuperadminTransactionController::class, 'extension'])->name('transactions.extension');
+        Route::get('/transaksi/pelunasan', [App\Http\Controllers\SuperadminTransactionController::class, 'redemption'])->name('transactions.redemption');
+    });
 Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', 'role:admin'])
