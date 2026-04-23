@@ -8,10 +8,18 @@
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Detail Transaksi Gadai</h1>
                     <p class="mt-2 text-gray-600 dark:text-gray-400">No SBG: {{ $transaction->no_sbg }}</p>
                 </div>
-                <a href="{{ route('superadmin.transactions.pawn') }}"
-                    class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    Kembali
-                </a>
+                <div class="flex items-center gap-2">
+                    @if ($transaction->status === 'approved')
+                        <a href="{{ route('superadmin.transactions.pawn.sbg', $transaction->id) }}"
+                            class="inline-flex items-center px-4 py-2 border border-blue-600 rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                            Unduh SBG
+                        </a>
+                    @endif
+                    <a href="{{ route('superadmin.transactions.pawn') }}"
+                        class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        Kembali
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -61,7 +69,7 @@
                 <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">No SBG</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $transaction->no_sbg }}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $transaction->no_sbg ?? '-' }}</dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Transaksi</dt>
@@ -71,13 +79,25 @@
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
                         <dd class="mt-1">
-                            <span
-                                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
-                            @if ($transaction->status == 'pending') bg-yellow-100 text-yellow-800
-                            @elseif($transaction->status == 'approved') bg-green-100 text-green-800
-                            @elseif($transaction->status == 'rejected') bg-red-100 text-red-800
-                            @else bg-blue-100 text-blue-800 @endif">
-                                {{ ucfirst($transaction->status) }}
+                            @php
+                                $statusLabel = 'Unknown';
+                                $statusClass = 'bg-gray-100 text-gray-800';
+                                if ($transaction->status == 'pending') {
+                                    $statusLabel = 'Menunggu Approval';
+                                    $statusClass = 'bg-yellow-100 text-yellow-800';
+                                } elseif ($transaction->status == 'approved') {
+                                    $statusLabel = 'Aktif';
+                                    $statusClass = 'bg-green-100 text-green-800';
+                                } elseif ($transaction->status == 'rejected') {
+                                    $statusLabel = 'Tolak';
+                                    $statusClass = 'bg-red-100 text-red-800';
+                                } elseif ($transaction->status == 'completed') {
+                                    $statusLabel = 'Lunas';
+                                    $statusClass = 'bg-blue-100 text-blue-800';
+                                }
+                            @endphp
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $statusClass }}">
+                                {{ $statusLabel }}
                             </span>
                         </dd>
                     </div>
@@ -115,17 +135,17 @@
             {{-- Item Information --}}
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Informasi Barang</h3>
-                @if ($transaction->item_data)
+                @if ($transaction->item_name)
                     <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nama Barang</dt>
                             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-                                {{ $transaction->item_data['name'] ?? 'N/A' }}</dd>
+                                {{ $transaction->item_name ?? 'N/A' }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Deskripsi</dt>
                             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-                                {{ $transaction->item_data['description'] ?? 'N/A' }}</dd>
+                                {{ $transaction->item_description ?? 'N/A' }}</dd>
                         </div>
                     </dl>
                     @if ($transaction->item_photos)
@@ -156,8 +176,13 @@
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nominal Pinjaman</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">Rp
-                            {{ number_format($transaction->loan_amount) }}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            @if ($transaction->loan_amount)
+                                Rp {{ number_format($transaction->loan_amount) }}
+                            @else
+                                -
+                            @endif
+                        </dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Taksiran Final</dt>
@@ -178,16 +203,16 @@
                 <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Cabang</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $transaction->branch->nama_cabang }}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $transaction->branch->nama }}</dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Petugas Input</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $transaction->officer->name }}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $transaction->officer->nama }}</dd>
                     </div>
                     @if ($transaction->admin)
                         <div>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Pimpinan Approval</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $transaction->admin->name }}</dd>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $transaction->admin->nama }}</dd>
                         </div>
                     @endif
                 </dl>

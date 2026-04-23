@@ -6,7 +6,29 @@
             <p class="mt-2 text-gray-600 dark:text-gray-400">Pantau dan kelola semua aktivitas transaksi dalam sistem</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {{-- Approval Pengajuan --}}
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Approval Pengajuan</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Setujui/tolak pengajuan gadai</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ route('superadmin.transactions.approval') }}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700">
+                        Lihat Approval
+                    </a>
+                </div>
+            </div>
+
             {{-- Gadai --}}
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center">

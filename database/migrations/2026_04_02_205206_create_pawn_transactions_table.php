@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('pawn_transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('no_sbg')->unique();
+            $table->string('no_sbg')->nullable()->unique();
             $table->foreignId('customer_id')->constrained('nasabah')->onDelete('cascade');
             $table->json('item_data'); // data barang
             $table->json('item_photos')->nullable(); // array of photo paths
             $table->decimal('officer_appraisal_min', 15, 2);
             $table->decimal('officer_appraisal_max', 15, 2);
-            $table->decimal('loan_amount', 15, 2);
+            $table->decimal('loan_amount', 15, 2)->nullable();
             $table->decimal('final_appraisal', 15, 2)->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'completed'])->default('pending');
             $table->foreignId('branch_id')->constrained('cabang')->onDelete('cascade');

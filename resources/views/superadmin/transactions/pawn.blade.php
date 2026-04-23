@@ -52,7 +52,7 @@
                         <option value="">Semua Cabang</option>
                         @foreach (\App\Models\Branch::all() as $branch)
                             <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
-                                {{ $branch->nama_cabang }}</option>
+                                {{ $branch->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -130,14 +130,14 @@
                         @forelse($pawnTransactions as $transaction)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $transaction->no_sbg }}</td>
+                                    {{ $transaction->no_sbg ?? '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                     {{ $transaction->customer->no_cif }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                     {{ $transaction->customer->nama }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                    @if ($transaction->item_data)
-                                        {{ $transaction->item_data['name'] ?? 'N/A' }}
+                                    @if ($transaction->item_name)
+                                        {{ $transaction->item_name }}
                                     @else
                                         N/A
                                     @endif
@@ -146,8 +146,13 @@
                                     Rp {{ number_format($transaction->officer_appraisal_min) }} - Rp
                                     {{ number_format($transaction->officer_appraisal_max) }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Rp
-                                    {{ number_format($transaction->loan_amount) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    @if ($transaction->loan_amount)
+                                        Rp {{ number_format($transaction->loan_amount) }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                     @if ($transaction->final_appraisal)
                                         Rp {{ number_format($transaction->final_appraisal) }}
@@ -156,19 +161,32 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
+                                    @php
+                                        $statusLabel = 'Unknown';
+                                        $statusClass = 'bg-gray-100 text-gray-800';
+                                        if ($transaction->status == 'pending') {
+                                            $statusLabel = 'Menunggu Approval';
+                                            $statusClass = 'bg-yellow-100 text-yellow-800';
+                                        } elseif ($transaction->status == 'approved') {
+                                            $statusLabel = 'Aktif';
+                                            $statusClass = 'bg-green-100 text-green-800';
+                                        } elseif ($transaction->status == 'rejected') {
+                                            $statusLabel = 'Tolak';
+                                            $statusClass = 'bg-red-100 text-red-800';
+                                        } elseif ($transaction->status == 'completed') {
+                                            $statusLabel = 'Lunas';
+                                            $statusClass = 'bg-blue-100 text-blue-800';
+                                        }
+                                    @endphp
                                     <span
-                                        class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
-                                    @if ($transaction->status == 'pending') bg-yellow-100 text-yellow-800
-                                    @elseif($transaction->status == 'approved') bg-green-100 text-green-800
-                                    @elseif($transaction->status == 'rejected') bg-red-100 text-red-800
-                                    @else bg-blue-100 text-blue-800 @endif">
-                                        {{ ucfirst($transaction->status) }}
+                                        class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $statusClass }}">
+                                        {{ $statusLabel }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    {{ $transaction->branch->nama_cabang }}</td>
+                                    {{ $transaction->branch->nama }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    {{ $transaction->officer->name }}</td>
+                                    {{ $transaction->officer->nama }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                     {{ $transaction->transaction_date->format('d/m/Y') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">

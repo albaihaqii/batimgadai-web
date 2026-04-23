@@ -10,6 +10,11 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // DB::table('users')->truncate(); // 🔥 hapus semua user
+        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $smg = DB::table('cabang')->where('kode', 'SMG')->value('id');
         $mgl = DB::table('cabang')->where('kode', 'MGL')->value('id');
         $krm = DB::table('cabang')->where('kode', 'KRM')->value('id');
@@ -19,7 +24,7 @@ class UserSeeder extends Seeder
             [
                 'nama'       => 'Bapak Direktur',
                 'email'      => 'superadmin@batimgadai.com',
-                'password'   => Hash::make('password123'),
+                'password'   => Hash::make('anjaymabar'),
                 'role'       => 'superadmin',
                 'cabang_id'  => null,
                 'status'     => 'aktif',

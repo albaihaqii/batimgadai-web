@@ -82,7 +82,7 @@ class MenuHelper
                         'icon' => 'approval',
                         'name' => 'Approval',
                         'subItems' => [
-                            ['name' => 'Pengajuan Gadai', 'path' => '/superadmin/approval/gadai'],
+                            ['name' => 'Pengajuan Gadai', 'path' => '/superadmin/transaksi/approval'],
                         ],
                     ],
                 ],

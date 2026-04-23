@@ -9,7 +9,11 @@ class PawnTransaction extends Model
     protected $fillable = [
         'no_sbg',
         'customer_id',
-        'item_data',
+        'item_name',
+        'item_description',
+        'item_category',
+        'item_condition',
+        'item_completeness',
         'item_photos',
         'officer_appraisal_min',
         'officer_appraisal_max',
@@ -17,6 +21,7 @@ class PawnTransaction extends Model
         'final_appraisal',
         'status',
         'branch_id',
+        'locker_id',
         'officer_id',
         'admin_id',
         'transaction_date',
@@ -24,7 +29,6 @@ class PawnTransaction extends Model
     ];
 
     protected $casts = [
-        'item_data' => 'array',
         'item_photos' => 'array',
         'officer_appraisal_min' => 'decimal:2',
         'officer_appraisal_max' => 'decimal:2',
@@ -52,5 +56,10 @@ class PawnTransaction extends Model
     public function admin()
     {
         return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function locker()
+    {
+        return $this->belongsTo(Locker::class, 'locker_id');
     }
 }

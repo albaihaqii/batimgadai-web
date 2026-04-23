@@ -16,11 +16,11 @@ class PawnTransactionSeeder extends Seeder
         PawnTransaction::create([
             'no_sbg' => '250604SMG000001',
             'customer_id' => 1, // Assuming customer exists
-            'item_data' => [
-                'name' => 'iPhone 13 Pro',
-                'description' => 'Smartphone Apple iPhone 13 Pro 128GB',
-                'category' => 'Elektronik'
-            ],
+            'item_name' => 'iPhone 13 Pro',
+            'item_description' => 'Smartphone Apple iPhone 13 Pro 128GB',
+            'item_category' => 'Elektronik',
+            'item_condition' => 'Sangat Baik',
+            'item_completeness' => 'Lengkap',
             'officer_appraisal_min' => 3000000,
             'officer_appraisal_max' => 3500000,
             'loan_amount' => 3200000,
@@ -36,11 +36,11 @@ class PawnTransactionSeeder extends Seeder
         PawnTransaction::create([
             'no_sbg' => '250604MGL000001',
             'customer_id' => 2,
-            'item_data' => [
-                'name' => 'Laptop Asus',
-                'description' => 'Laptop Asus ROG Gaming',
-                'category' => 'Elektronik'
-            ],
+            'item_name' => 'Laptop Asus',
+            'item_description' => 'Laptop Asus ROG Gaming',
+            'item_category' => 'Elektronik',
+            'item_condition' => 'Baik',
+            'item_completeness' => 'Lengkap',
             'officer_appraisal_min' => 2500000,
             'officer_appraisal_max' => 3000000,
             'loan_amount' => 2800000,
@@ -56,11 +56,11 @@ class PawnTransactionSeeder extends Seeder
         PawnTransaction::create([
             'no_sbg' => '250604KRM000001',
             'customer_id' => 3,
-            'item_data' => [
-                'name' => 'Samsung A54',
-                'description' => 'Smartphone Samsung Galaxy A54',
-                'category' => 'Elektronik'
-            ],
+            'item_name' => 'Samsung A54',
+            'item_description' => 'Smartphone Samsung Galaxy A54',
+            'item_category' => 'Elektronik',
+            'item_condition' => 'Sangat Baik',
+            'item_completeness' => 'Lengkap',
             'officer_appraisal_min' => 1000000,
             'officer_appraisal_max' => 1300000,
             'loan_amount' => 1200000,

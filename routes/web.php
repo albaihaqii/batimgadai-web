@@ -70,8 +70,15 @@ Route::prefix('superadmin')
         Route::put('/transaksi/gadai/{id}', [App\Http\Controllers\SuperadminTransactionController::class, 'updatePawn'])->name('transactions.pawn.update');
         Route::delete('/transaksi/gadai/{id}', [App\Http\Controllers\SuperadminTransactionController::class, 'destroyPawn'])->name('transactions.pawn.destroy');
         Route::put('/transaksi/gadai/{id}/status', [App\Http\Controllers\SuperadminTransactionController::class, 'updatePawnStatus'])->name('transactions.update_pawn_status');
+        Route::get('/transaksi/gadai/{id}/sbg', [App\Http\Controllers\SuperadminTransactionController::class, 'downloadSbg'])->name('transactions.pawn.sbg');
         Route::get('/transaksi/perpanjangan', [App\Http\Controllers\SuperadminTransactionController::class, 'extension'])->name('transactions.extension');
         Route::get('/transaksi/pelunasan', [App\Http\Controllers\SuperadminTransactionController::class, 'redemption'])->name('transactions.redemption');
+
+        // Approval Routes
+        Route::get('/transaksi/approval', [App\Http\Controllers\SuperadminTransactionController::class, 'approval'])->name('transactions.approval');
+        Route::get('/transaksi/approval/{id}', [App\Http\Controllers\SuperadminTransactionController::class, 'showApproval'])->name('transactions.show_approval');
+        Route::post('/transaksi/approval/{id}/approve', [App\Http\Controllers\SuperadminTransactionController::class, 'approve'])->name('transactions.approve');
+        Route::post('/transaksi/approval/{id}/reject', [App\Http\Controllers\SuperadminTransactionController::class, 'reject'])->name('transactions.reject');
     });
 Route::prefix('admin')
     ->name('admin.')
