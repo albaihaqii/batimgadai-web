@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CustomerSeeder::class,
             LockerSeeder::class,
+            JasaRateSeeder::class,
+            GadaiSeeder::class,
+            PerpanjanganSeeder::class,
+            PelunasanSeeder::class,
         ]);
     }
 }
