@@ -14,6 +14,10 @@ class DatabaseSeeder extends Seeder
             // CustomerSeeder::class,
             LockerSeeder::class,
             PawnTransactionSeeder::class,
+            JasaRateSeeder::class,
+            GadaiSeeder::class,
+            PerpanjanganSeeder::class,
+            PelunasanSeeder::class,
         ]);
     }
 }

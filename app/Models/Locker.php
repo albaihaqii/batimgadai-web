@@ -22,11 +22,10 @@ class Locker extends Model
         return $this->belongsTo(Branch::class, 'cabang_id');
     }
 
-    // Relasi ke gadai — akan diaktifkan setelah model Gadai dibuat
-    // public function gadai()
-    // {
-    //     return $this->belongsTo(\App\Models\Gadai::class, 'gadai_id');
-    // }
+    public function gadai()
+    {
+        return $this->belongsTo(Gadai::class, 'gadai_id');
+    }
 
     // Generate kode loker otomatis
     public static function generateKode(string $kodeCabang, string $rak): string
