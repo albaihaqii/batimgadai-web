@@ -65,7 +65,7 @@
     </table>
 
     <div class="footer">
-        BATIM GADAI © {{ now()->format('Y') }} — Dokumen ini digenerate otomatis oleh sistem
+        BATIM GADAI © {{ now()->format('Y') }} - Dokumen ini digenerate otomatis oleh sistem
     </div>
 </body>
 </html>

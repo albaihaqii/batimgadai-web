@@ -23,8 +23,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>BATIM GADAI — Sistem Informasi Gadai Elektronik</h1>
-        <p>Data Cabang — Dicetak pada {{ now()->format('d M Y, H:i') }} WIB</p>
+        <h1>BATIM GADAI - Sistem Informasi Gadai Elektronik</h1>
+        <p>Data Cabang - Dicetak pada {{ now()->format('d M Y, H:i') }} WIB</p>
     </div>
 
     <div class="info">
@@ -61,7 +61,7 @@
     </table>
 
     <div class="footer">
-        BATIM GADAI © {{ now()->format('Y') }} — Dokumen ini digenerate otomatis oleh sistem
+        BATIM GADAI © {{ now()->format('Y') }} - Dokumen ini digenerate otomatis oleh sistem
     </div>
 </body>
 </html>
