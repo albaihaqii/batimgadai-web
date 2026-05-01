@@ -54,7 +54,7 @@ Platform digital BATIM GADAI terdiri dari dua komponen utama:
 | Frontend Styling   | Tailwind CSS v4   |
 | UI Interactivity   | Alpine.js         |
 | Build Tool         | Vite              |
-| Database           | MySQL 8.0         |
+| Database           | MySQL 8.0.30      |
 | Admin Template     | TailAdmin Laravel |
 | Development Server | Laragon           |
 
