@@ -32,7 +32,7 @@ Route::prefix('superadmin')
     ->name('superadmin.')
     ->middleware(['auth', 'role:superadmin'])
     ->group(function () {
-        Route::get('/dashboard', fn() => view('superadmin.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'superadmin'])->name('dashboard');
         Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
         Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
         Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
