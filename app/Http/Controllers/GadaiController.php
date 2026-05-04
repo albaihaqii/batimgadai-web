@@ -9,6 +9,7 @@ use App\Models\Branch;
 use App\Models\Customer;
 use App\Models\Sbg;
 use App\Models\ApprovalGadai;
+use App\Events\GadaiCreated;
 use App\Models\Notification;
 use App\Models\User;
 use App\Helpers\HitungBiayaHelper;
@@ -40,8 +41,8 @@ class GadaiController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('no_sbg', 'like', "%{$search}%")
-                  ->orWhereHas('nasabah', fn($q) => $q->where('nama', 'like', "%{$search}%")
-                      ->orWhere('no_cif', 'like', "%{$search}%"));
+                    ->orWhereHas('nasabah', fn($q) => $q->where('nama', 'like', "%{$search}%")
+                        ->orWhere('no_cif', 'like', "%{$search}%"));
             });
         }
 
@@ -101,7 +102,9 @@ class GadaiController extends Controller
             'nilai_taksiran_max.gte'      => 'Nilai taksiran maksimum harus lebih besar atau sama dengan minimum.',
         ]);
 
-        DB::transaction(function () use ($request, $role) {
+        $createdGadai = null;
+
+        DB::transaction(function () use ($request, $role, &$createdGadai) {
             // Buat data barang
             $barang = Barang::create([
                 'nasabah_id'  => $request->nasabah_id,
@@ -157,7 +160,9 @@ class GadaiController extends Controller
                     $admin->id,
                     'Pengajuan Gadai Baru',
                     'Ada pengajuan gadai baru dari nasabah ' . $gadai->nasabah->nama,
-                    'pengajuan_gadai', 'gadai', $gadai->id
+                    'pengajuan_gadai',
+                    'gadai',
+                    $gadai->id
                 );
             }
 
@@ -167,10 +172,18 @@ class GadaiController extends Controller
                     $sa->id,
                     'Pengajuan Gadai Baru',
                     'Ada pengajuan gadai baru dari nasabah ' . $gadai->nasabah->nama,
-                    'pengajuan_gadai', 'gadai', $gadai->id
+                    'pengajuan_gadai',
+                    'gadai',
+                    $gadai->id
                 );
             }
+
+            $createdGadai = $gadai;
         });
+
+        if ($createdGadai) {
+            event(new GadaiCreated($createdGadai));
+        }
 
         return redirect()
             ->route("{$role}.transaksi.gadai")
@@ -245,7 +258,7 @@ class GadaiController extends Controller
 
         $verifyUrl = url('/verify/' . $sbg->qr_token);
         $qrSvg     = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
-                        ->size(120)->margin(1)->generate($verifyUrl);
+            ->size(120)->margin(1)->generate($verifyUrl);
         $qrBase64  = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
         $namaFile  = 'SBG-' . strtoupper($tipe) . '-' . $gadai->no_sbg . '.pdf';
 
@@ -278,9 +291,10 @@ class GadaiController extends Controller
         $nilaiTaksiranMax = (int) $gadai->nilai_taksiran_max;
 
         if ($nilaiTotal > $nilaiTaksiranMax) {
-            return redirect()->back()->with('error',
+            return redirect()->back()->with(
+                'error',
                 'Total pinjaman Rp ' . number_format($nilaiTotal, 0, ',', '.') .
-                ' melebihi nilai taksiran maksimum Rp ' . number_format($nilaiTaksiranMax, 0, ',', '.') . '.'
+                    ' melebihi nilai taksiran maksimum Rp ' . number_format($nilaiTaksiranMax, 0, ',', '.') . '.'
             );
         }
 

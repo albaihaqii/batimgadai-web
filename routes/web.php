@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ReportController;
 
 // Landing Page
 Route::get('/', fn() => view('frontend.index'))->name('home');
@@ -12,6 +14,14 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
+Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
+    ->middleware('auth')
+    ->name('notifications.read');
+
+Route::get('/notifications/{notification}/open', [NotificationController::class, 'redirectToReference'])
+    ->middleware('auth')
+    ->name('notifications.open');
 
 // Public
 Route::get('/loker/{kode_loker}', [App\Http\Controllers\LockerController::class, 'scan'])->name('loker.scan');
@@ -90,6 +100,13 @@ Route::prefix('superadmin')
         Route::get('/approval/gadai/{gadai}', [App\Http\Controllers\ApprovalController::class, 'show'])->name('approval.gadai.show');
         Route::post('/approval/gadai/{gadai}', [App\Http\Controllers\ApprovalController::class, 'proses'])->name('approval.gadai.proses');
 
+        Route::get('/laporan/harian', [ReportController::class, 'daily'])->name('laporan.harian');
+        Route::get('/laporan/harian/export', [ReportController::class, 'exportDaily'])->name('laporan.harian.export');
+        Route::get('/laporan/mingguan', [ReportController::class, 'weekly'])->name('laporan.mingguan');
+        Route::get('/laporan/mingguan/export', [ReportController::class, 'exportWeekly'])->name('laporan.mingguan.export');
+        Route::get('/laporan/bulanan', [ReportController::class, 'monthly'])->name('laporan.bulanan');
+        Route::get('/laporan/bulanan/export', [ReportController::class, 'exportMonthly'])->name('laporan.bulanan.export');
+
         Route::get('/transaksi/perpanjangan', [App\Http\Controllers\PerpanjanganController::class, 'index'])->name('transaksi.perpanjangan');
         Route::get('/transaksi/perpanjangan/proses', [App\Http\Controllers\PerpanjanganController::class, 'create'])->name('transaksi.perpanjangan.create');
         Route::post('/transaksi/perpanjangan', [App\Http\Controllers\PerpanjanganController::class, 'store'])->name('transaksi.perpanjangan.store');
@@ -140,6 +157,13 @@ Route::prefix('admin')
         Route::get('/approval/gadai', [App\Http\Controllers\ApprovalController::class, 'index'])->name('approval.gadai');
         Route::get('/approval/gadai/{gadai}', [App\Http\Controllers\ApprovalController::class, 'show'])->name('approval.gadai.show');
         Route::post('/approval/gadai/{gadai}', [App\Http\Controllers\ApprovalController::class, 'proses'])->name('approval.gadai.proses');
+
+        Route::get('/laporan/harian', [ReportController::class, 'daily'])->name('laporan.harian');
+        Route::get('/laporan/harian/export', [ReportController::class, 'exportDaily'])->name('laporan.harian.export');
+        Route::get('/laporan/mingguan', [ReportController::class, 'weekly'])->name('laporan.mingguan');
+        Route::get('/laporan/mingguan/export', [ReportController::class, 'exportWeekly'])->name('laporan.mingguan.export');
+        Route::get('/laporan/bulanan', [ReportController::class, 'monthly'])->name('laporan.bulanan');
+        Route::get('/laporan/bulanan/export', [ReportController::class, 'exportMonthly'])->name('laporan.bulanan.export');
 
         Route::get('/transaksi/perpanjangan', [App\Http\Controllers\PerpanjanganController::class, 'index'])->name('transaksi.perpanjangan');
         Route::get('/transaksi/perpanjangan/{perpanjangan}', [App\Http\Controllers\PerpanjanganController::class, 'show'])->name('transaksi.perpanjangan.show');
