@@ -94,25 +94,23 @@
             }
         })();
     </script>
-    
+
 </head>
 
-<body
-    x-data="{ 'loaded': true}"
-    x-init="$store.sidebar.isExpanded = window.innerWidth >= 1280;
-    const checkMobile = () => {
-        if (window.innerWidth < 1280) {
-            $store.sidebar.setMobileOpen(false);
-            $store.sidebar.isExpanded = false;
-        } else {
-            $store.sidebar.isMobileOpen = false;
-            $store.sidebar.isExpanded = true;
-        }
-    };
-    window.addEventListener('resize', checkMobile);">
+<body x-data="{ 'loaded': true }" x-init="$store.sidebar.isExpanded = window.innerWidth >= 1280;
+const checkMobile = () => {
+    if (window.innerWidth < 1280) {
+        $store.sidebar.setMobileOpen(false);
+        $store.sidebar.isExpanded = false;
+    } else {
+        $store.sidebar.isMobileOpen = false;
+        $store.sidebar.isExpanded = true;
+    }
+};
+window.addEventListener('resize', checkMobile);">
 
     {{-- preloader --}}
-    <x-common.preloader/>
+    <x-common.preloader />
     {{-- preloader end --}}
 
     <div class="min-h-screen xl:flex">
@@ -135,6 +133,15 @@
 
     </div>
 
+    <div id="live-toast"
+        class="fixed bottom-4 right-4 z-50 hidden max-w-sm overflow-hidden rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white shadow-xl shadow-slate-900/30">
+        <div class="flex items-start gap-3">
+            <span class="mt-0.5 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+            <div class="flex-1" id="live-toast-message"></div>
+            <button type="button" onclick="document.getElementById('live-toast').classList.add('hidden')"
+                class="text-slate-300 hover:text-white">×</button>
+        </div>
+    </div>
 </body>
 
 @stack('scripts')
