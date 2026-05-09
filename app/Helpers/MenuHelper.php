@@ -9,7 +9,7 @@ class MenuHelper
         $user = request()->user();
         $role = $user ? $user->role : null;
 
-        return match($role) {
+        return match ($role) {
             'superadmin' => self::getSuperadminMenu(),
             'admin'      => self::getAdminMenu(),
             'officer'    => self::getOfficerMenu(),
@@ -100,8 +100,8 @@ class MenuHelper
                         'name' => 'Laporan',
                         'subItems' => [
                             ['name' => 'Laporan Harian', 'path' => '/superadmin/laporan/harian'],
+                            ['name' => 'Laporan Mingguan', 'path' => '/superadmin/laporan/mingguan'],
                             ['name' => 'Laporan Bulanan', 'path' => '/superadmin/laporan/bulanan'],
-                            ['name' => 'Laporan Per Cabang', 'path' => '/superadmin/laporan/cabang'],
                         ],
                     ],
                 ],
@@ -177,6 +177,7 @@ class MenuHelper
                         'name' => 'Laporan',
                         'subItems' => [
                             ['name' => 'Laporan Harian', 'path' => '/admin/laporan/harian'],
+                            ['name' => 'Laporan Mingguan', 'path' => '/admin/laporan/mingguan'],
                             ['name' => 'Laporan Bulanan', 'path' => '/admin/laporan/bulanan'],
                         ],
                     ],
