@@ -8,6 +8,7 @@ use App\Models\Pelunasan;
 use App\Models\Perpanjangan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -290,6 +291,10 @@ class ReportController extends Controller
     {
         $fromDate = $from->copy()->startOfDay()->toDateString();
         $toDate   = $to->copy()->endOfDay()->toDateString();
+        $user     = Auth::user();
+
+        $isBranchScoped = $user && $user->role !== 'superadmin';
+        $branchId       = $isBranchScoped ? $user->cabang_id : null;
 
         /*
     |--------------------------------------------------------------------------
@@ -302,6 +307,7 @@ class ReportController extends Controller
         $gadaiBaru = Gadai::with(['nasabah', 'branch', 'barang'])
             ->whereIn('status', ['disetujui', 'aktif'])
             ->whereBetween('tgl_gadai', [$fromDate, $toDate])
+            ->when($isBranchScoped, fn($query) => $query->where('cabang_id', $branchId))
             ->get()
             ->map(function ($gadai) {
 
@@ -344,6 +350,10 @@ class ReportController extends Controller
         ])
             ->where('status_bayar', 'berhasil')
             ->whereBetween('tgl_pelunasan', [$fromDate, $toDate])
+            ->when(
+                $isBranchScoped,
+                fn($query) => $query->whereHas('gadai', fn($gadaiQuery) => $gadaiQuery->where('cabang_id', $branchId))
+            )
             ->get()
             ->map(function ($pelunasan) {
 
@@ -367,6 +377,7 @@ class ReportController extends Controller
                     'barang'          => $gadai->barang,
 
                     'taksiran'        => $taksiran,
+                    'nilai_pinjaman'  => (float) ($gadai->nilai_pinjaman ?? 0),
 
                     'cash_out'        => 0,
 
@@ -392,6 +403,10 @@ class ReportController extends Controller
         ])
             ->where('status_bayar', 'berhasil')
             ->whereBetween('tgl_perpanjangan', [$fromDate, $toDate])
+            ->when(
+                $isBranchScoped,
+                fn($query) => $query->whereHas('gadai', fn($gadaiQuery) => $gadaiQuery->where('cabang_id', $branchId))
+            )
             ->get()
             ->map(function ($perpanjangan) {
 
@@ -461,7 +476,7 @@ class ReportController extends Controller
             $pelunasan->sum(function ($item) {
                 return (float) (
                     $item->cash_in -
-                    ($item->gadai->nilai_pinjaman ?? 0)
+                    ($item->nilai_pinjaman ?? 0)
                 );
             }) +
             $perpanjangan->sum('cash_in');
