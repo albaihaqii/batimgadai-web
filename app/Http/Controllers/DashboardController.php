@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+// use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use App\Models\Branch;
@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $usdIdrRate = null;
         $goldError = null;
 
-        $apiKey = env('GOLD_API_KEY');
+        $apiKey = config('services.gold_api.key');
 
         if ($apiKey) {
             try {
