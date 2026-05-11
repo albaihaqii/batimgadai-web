@@ -35,8 +35,8 @@ class PelunasanController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('no_sbg', 'like', "%{$search}%")
-                  ->orWhereHas('nasabah', fn($q) => $q->where('nama', 'like', "%{$search}%")
-                      ->orWhere('no_cif', 'like', "%{$search}%"));
+                    ->orWhereHas('nasabah', fn($q) => $q->where('nama', 'like', "%{$search}%")
+                        ->orWhere('no_cif', 'like', "%{$search}%"));
             });
         }
 
@@ -222,7 +222,6 @@ class PelunasanController extends Controller
             return redirect()
                 ->route(Auth::user()->role . '.transaksi.pelunasan.show', $pelunasan->id)
                 ->with('snap_token', $snapToken);
-
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal membuat transaksi Midtrans: ' . $e->getMessage());
         }
@@ -291,7 +290,6 @@ class PelunasanController extends Controller
             return redirect()
                 ->route(Auth::user()->role . '.transaksi.pelunasan.show', $pelunasan->id)
                 ->with('snap_token', $snapToken);
-
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal membuat ulang transaksi: ' . $e->getMessage());
         }
