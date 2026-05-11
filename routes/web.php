@@ -2,11 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HeroSlideController;
+use App\Http\Controllers\MobileSlideController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
+use App\Models\HeroSlide;
 
 // Landing Page
-Route::get('/', fn() => view('frontend.index'))->name('home');
+Route::get('/', fn() => view('frontend.index', [
+    'heroSlides' => HeroSlide::activeOrDefaults(),
+]))->name('home');
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -87,6 +92,19 @@ Route::prefix('superadmin')
         Route::get('/jasa-rate/{jasaRate}/edit', [App\Http\Controllers\JasaRateController::class, 'edit'])->name('jasa-rate.edit');
         Route::put('/jasa-rate/{jasaRate}', [App\Http\Controllers\JasaRateController::class, 'update'])->name('jasa-rate.update');
         Route::delete('/jasa-rate/{jasaRate}', [App\Http\Controllers\JasaRateController::class, 'destroy'])->name('jasa-rate.destroy');
+
+        Route::get('/settings/hero', [HeroSlideController::class, 'index'])->name('settings.hero');
+        Route::get('/settings/hero/tambah', [HeroSlideController::class, 'create'])->name('settings.hero.create');
+        Route::post('/settings/hero', [HeroSlideController::class, 'store'])->name('settings.hero.store');
+        Route::get('/settings/hero/{heroSlide}/edit', [HeroSlideController::class, 'edit'])->name('settings.hero.edit');
+        Route::put('/settings/hero/{heroSlide}', [HeroSlideController::class, 'update'])->name('settings.hero.update');
+        Route::delete('/settings/hero/{heroSlide}', [HeroSlideController::class, 'destroy'])->name('settings.hero.destroy');
+        Route::get('/settings/mobile', [MobileSlideController::class, 'index'])->name('settings.mobile');
+        Route::get('/settings/mobile/tambah', [MobileSlideController::class, 'create'])->name('settings.mobile.create');
+        Route::post('/settings/mobile', [MobileSlideController::class, 'store'])->name('settings.mobile.store');
+        Route::get('/settings/mobile/{mobileSlide}/edit', [MobileSlideController::class, 'edit'])->name('settings.mobile.edit');
+        Route::put('/settings/mobile/{mobileSlide}', [MobileSlideController::class, 'update'])->name('settings.mobile.update');
+        Route::delete('/settings/mobile/{mobileSlide}', [MobileSlideController::class, 'destroy'])->name('settings.mobile.destroy');
 
         Route::get('/transaksi/gadai', [App\Http\Controllers\GadaiController::class, 'index'])->name('transaksi.gadai');
         Route::get('/transaksi/gadai/tambah', [App\Http\Controllers\GadaiController::class, 'create'])->name('transaksi.gadai.create');

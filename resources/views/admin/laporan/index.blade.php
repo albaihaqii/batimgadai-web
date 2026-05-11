@@ -29,8 +29,16 @@
                 @if ($type === 'harian')
                     <form action="{{ route($routePrefix . '.laporan.harian') }}" method="GET"
                         class="flex flex-wrap items-center gap-3">
-                        <input name="date" type="date" value="{{ $date }}" onchange="this.form.submit()"
+                        <input name="date" type="date" value="{{ $date }}"
                             class="h-11 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-theme-xs focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" />
+                        <button type="submit"
+                            class="inline-flex h-11 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="stroke-current">
+                                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Tampilkan
+                        </button>
                     </form>
                 @elseif ($type === 'mingguan')
                     <form action="{{ route($routePrefix . '.laporan.mingguan') }}" method="GET"
@@ -38,14 +46,30 @@
                         <label class="text-sm font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">
                             Minggu mulai:
                         </label>
-                        <input name="week_start" type="date" value="{{ $weekStart }}" onchange="this.form.submit()"
+                        <input name="week_start" type="date" value="{{ $weekStart }}"
                             class="h-11 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-theme-xs focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" />
+                        <button type="submit"
+                            class="inline-flex h-11 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="stroke-current">
+                                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Tampilkan
+                        </button>
                     </form>
                 @elseif ($type === 'bulanan')
                     <form action="{{ route($routePrefix . '.laporan.bulanan') }}" method="GET"
                         class="flex flex-wrap items-center gap-3">
-                        <input name="month" type="month" value="{{ $month }}" onchange="this.form.submit()"
+                        <input name="month" type="month" value="{{ $month }}"
                             class="h-11 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-theme-xs focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" />
+                        <button type="submit"
+                            class="inline-flex h-11 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="stroke-current">
+                                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Tampilkan
+                        </button>
                     </form>
                 @endif
             </div>
