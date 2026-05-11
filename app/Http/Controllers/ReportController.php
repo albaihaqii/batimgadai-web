@@ -6,6 +6,7 @@ use App\Exports\TransactionReportExport;
 use App\Models\Gadai;
 use App\Models\Pelunasan;
 use App\Models\Perpanjangan;
+use App\Models\Branch;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,15 @@ class ReportController extends Controller
 
         [$records, $summary] = $this->getReportData($from, $to);
 
+        // Apply filters
+        $records = $this->applyFilters($records, $request);
+
+        // Pagination
+        $perPage = $request->get('per_page', 10);
+        $records = $this->paginate($records, $perPage);
+
+        $branches = Branch::where('status', 'aktif')->get();
+
         return view('superadmin.laporan.index', [
             'type'        => 'harian',
             'date'        => $date,
@@ -31,6 +41,9 @@ class ReportController extends Controller
             'records'     => $records,
             'summary'     => $summary,
             'periodLabel' => $periodLabel,
+            'branches'    => $branches,
+            'selectedCabangId' => $request->get('cabang_id'),
+            'selectedStatus' => $request->get('status'),
         ]);
     }
 
@@ -43,6 +56,15 @@ class ReportController extends Controller
 
         [$records, $summary] = $this->getReportData($from, $to);
 
+        // Apply filters
+        $records = $this->applyFilters($records, $request);
+
+        // Pagination
+        $perPage = $request->get('per_page', 10);
+        $records = $this->paginate($records, $perPage);
+
+        $branches = Branch::where('status', 'aktif')->get();
+
         return view('superadmin.laporan.index', [
             'type'        => 'mingguan',
             'weekStart'   => $weekStart,
@@ -50,6 +72,9 @@ class ReportController extends Controller
             'records'     => $records,
             'summary'     => $summary,
             'periodLabel' => $periodLabel,
+            'branches'    => $branches,
+            'selectedCabangId' => $request->get('cabang_id'),
+            'selectedStatus' => $request->get('status'),
         ]);
     }
 
@@ -62,6 +87,15 @@ class ReportController extends Controller
 
         [$records, $summary] = $this->getReportData($from, $to);
 
+        // Apply filters
+        $records = $this->applyFilters($records, $request);
+
+        // Pagination
+        $perPage = $request->get('per_page', 10);
+        $records = $this->paginate($records, $perPage);
+
+        $branches = Branch::where('status', 'aktif')->get();
+
         return view('superadmin.laporan.index', [
             'type'        => 'bulanan',
             'month'       => $month,
@@ -69,7 +103,55 @@ class ReportController extends Controller
             'records'     => $records,
             'summary'     => $summary,
             'periodLabel' => $periodLabel,
+            'branches'    => $branches,
+            'selectedCabangId' => $request->get('cabang_id'),
+            'selectedStatus' => $request->get('status'),
         ]);
+    }
+
+    /**
+     * Apply filters to records collection
+     */
+    protected function applyFilters($records, Request $request)
+    {
+        // Filter by cabang (only for superadmin)
+        if (Auth::user()->role === 'superadmin' && $request->filled('cabang_id')) {
+            $records = $records->filter(fn($record) => $record->branch?->id == $request->get('cabang_id'));
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $status = $request->get('status');
+            $records = $records->filter(fn($record) => $record->status === $status || $record->jenis_transaksi === $status);
+        }
+
+        return $records->values();
+    }
+
+    /**
+     * Paginate collection manually
+     */
+    protected function paginate($items, $perPage = 10, $page = null)
+    {
+        $page = $page ?: (\Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1);
+
+        $items = $items instanceof \Illuminate\Support\Collection ? $items : collect($items);
+
+        $total = $items->count();
+        $offset = ($page - 1) * $perPage;
+
+        $paginatedItems = $items->slice($offset, $perPage)->values();
+
+        return new \Illuminate\Pagination\LengthAwarePaginator(
+            $paginatedItems,
+            $total,
+            $perPage,
+            $page,
+            [
+                'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+                'query' => request()->query(),
+            ]
+        );
     }
 
     public function exportDaily(Request $request)

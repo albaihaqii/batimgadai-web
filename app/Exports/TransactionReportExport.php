@@ -2,27 +2,27 @@
 
 namespace App\Exports;
 
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class TransactionReportExport implements FromArray, ShouldAutoSize, WithEvents
+class TransactionReportExport implements FromArray, WithEvents
 {
-    private const COLOR_HEADER_BG    = '1E3A5F';
-    private const COLOR_SUBHEADER_BG = '2E6DA4';
-    private const COLOR_ACCENT_BG    = 'E8F1FB';
-    private const COLOR_SUMMARY_BG   = 'F0F7FF';
-    private const COLOR_WHITE        = 'FFFFFF';
-    private const COLOR_TEXT_DARK    = '1A1A2E';
-    private const COLOR_BORDER       = 'BDD7EE';
-    private const COLS               = 11; // A–K
+    private const COLS     = 11;
+    private const COL_LAST = 'K';
+    private const TEMPLATE = 'app/Exports/laporan-transaksi-v4.xlsx';
 
-    private int $dataStartRow = 12;
+    private int  $dataStartRow = 14;
+    private int  $dataCount    = 0;
+    private int  $totalRow     = 17;
+    private bool $hasData      = false;
 
     public function __construct(
         protected string $reportType,
@@ -31,253 +31,444 @@ class TransactionReportExport implements FromArray, ShouldAutoSize, WithEvents
         protected        $records,
     ) {}
 
+    // -------------------------------------------------------------------------
+    // Data
+    // -------------------------------------------------------------------------
+
     public function array(): array
     {
-        $rows = [];
+        $records = $this->recordsCollection();
+        $this->hasData   = $records->isNotEmpty();
+        $this->dataCount = max(1, $records->count());
+        $this->totalRow  = $this->dataStartRow + $this->dataCount + 2;
 
-        // R1–R4: judul
-        $rows[] = ['BATIM GADAI'];
-        $rows[] = ['Laporan Transaksi – ' . strtoupper($this->reportType)];
-        $rows[] = ['Periode: ' . $this->reportPeriod];
-        $rows[] = ['Dicetak: ' . now()->format('d/m/Y H:i')];
+        $rows   = [];
+        $rows[] = $this->blankRow(); // 1  – accent bar
+        $rows[] = $this->row([       // 2  – banner
+            'A' => 'BATIM GADAI',
+            'H' => $this->summary['active_customers'] ?? 0,
+            'J' => "Nasabah Aktif\n" . $this->reportPeriod,
+        ]);
+        $rows[] = $this->row([       // 3  – subtitle
+            'A' => 'Laporan Transaksi ' . Str::title(strtolower($this->reportType))
+                 . '  —  Dicetak: ' . now()->format('d/m/Y H:i'),
+        ]);
+        $rows[] = $this->blankRow(); // 4
+        $rows[] = $this->blankRow(); // 5
+        $rows[] = $this->row(['A' => 'RINGKASAN KEUANGAN']); // 6
+        $rows[] = $this->row([       // 7
+            'A' => 'Uang Pinjaman (UP)',
+            'D' => $this->fmt($this->summary['total_up'] ?? 0),
+            'G' => 'Arus Kas Bersih (Net)',
+            'J' => $this->fmtSign($this->summary['net_cash_flow'] ?? 0),
+        ]);
+        $rows[] = $this->row([       // 8
+            'A' => 'Total Uang Keluar',
+            'D' => $this->fmt($this->summary['cash_out'] ?? 0),
+            'G' => 'Total Sewa Modal',
+            'J' => $this->fmt($this->summary['total_sewa_modal'] ?? 0),
+        ]);
+        $rows[] = $this->row([       // 9
+            'A' => 'Total Uang Masuk',
+            'D' => $this->fmt($this->summary['cash_in'] ?? 0),
+            'G' => 'Total Biaya Admin',
+            'J' => $this->fmt($this->summary['total_admin'] ?? 0),
+        ]);
+        $rows[] = $this->blankRow(); // 10
+        $rows[] = $this->blankRow(); // 11
+        $rows[] = [                  // 12 – column headers
+            'No', 'Tgl Gadai', 'No. SBG', 'Nama Nasabah', 'Cabang',
+            'Barang Jaminan', 'Kategori', 'Nilai Taksiran',
+            'Uang Pinjaman', 'Uang Masuk', 'Status',
+        ];
+        $rows[] = $this->blankRow(); // 13 – blank data-template row
 
-        // R5: spacer
-        $rows[] = array_fill(0, self::COLS, null);
-
-        // R6: header blok ringkasan
-        $rows[] = ['RINGKASAN KEUANGAN'];
-
-        // R7–R10: isi ringkasan (2 kolom kiri–kanan)
-        $rows[] = ['Total Uang Pinjaman (UP)',     $this->fmt($this->summary['total_up']),         null, null, 'Net Cash Flow',      $this->fmtSign($this->summary['net_cash_flow'])];
-        $rows[] = ['Total Cash Out (Uang Keluar)', $this->fmt($this->summary['cash_out']),          null, null, 'Total Sewa Modal',   $this->fmt($this->summary['total_sewa_modal'])];
-        $rows[] = ['Total Cash In (Uang Masuk)',   $this->fmt($this->summary['cash_in']),           null, null, 'Total Biaya Admin',  $this->fmt($this->summary['total_admin'])];
-        $rows[] = ['Jumlah Nasabah Aktif',         $this->summary['active_customers'] . ' nasabah', null, null, null, null];
-
-        // R11: spacer
-        $rows[] = array_fill(0, self::COLS, null);
-
-        // R12: header tabel — catat posisinya
-        $this->dataStartRow = count($rows) + 1;
-        $rows[] = ['No', 'Tgl Gadai', 'No. SBG', 'Nasabah', 'Cabang', 'Barang Jaminan', 'Kategori', 'Nilai Taksiran', 'Uang Pinjaman', 'Uang Masuk', 'Status'];
-
-        // Baris data
-        if ($this->records->isEmpty()) {
-            $row = array_fill(0, self::COLS, null);
-            $row[4] = 'Tidak ada data transaksi untuk periode ini.';
-            $rows[] = $row;
+        if ($records->isEmpty()) {
+            $rows[] = $this->row(['A' => 'Tidak ada data transaksi untuk periode ini.']);
         } else {
-            foreach ($this->records as $i => $gadai) {
-                // pelunasan adalah hasMany → ambil yang berhasil pakai first()
-                $pelunasanBerhasil = $gadai->pelunasan
-                    ->where('status_bayar', 'berhasil')
-                    ->first();
-
-                $cashIn = (float) ($pelunasanBerhasil?->total_tebus ?? 0);
-
-                $rows[] = [
-                    $i + 1,
-                    $gadai->tgl_gadai
-                        ? \Carbon\Carbon::parse($gadai->tgl_gadai)->format('d/m/Y')
-                        : '-',
-                    $gadai->no_sbg ?? '-',
-                    $gadai->nasabah?->nama ?? '-',
-                    $gadai->branch?->nama ?? '-',
-                    $gadai->barang?->nama_barang ?? '-',
-                    $this->labelKategori($gadai->barang?->kategori),
-                    $this->fmt((float) ($gadai->nilai_taksiran_akhir
-                        ?? $gadai->nilai_taksiran_max
-                        ?? $gadai->nilai_taksiran_min
-                        ?? 0)),
-                    $this->fmt((float) ($gadai->nilai_pinjaman ?? 0)),
-                    $cashIn > 0 ? $this->fmt($cashIn) : '-',
-                    $this->labelStatus($gadai->status),
-                ];
+            foreach ($records as $i => $record) {
+                $rows[] = $this->recordRow($record, $i + 1);
             }
         }
 
-        // Spacer + baris total
-        $rows[] = array_fill(0, self::COLS, null);
-        $rows[] = [
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            'TOTAL',
-            $this->fmt($this->summary['cash_out']), 
-            $this->fmt($this->summary['cash_in']),
-            null
-        ];
+        $rows[] = $this->blankRow(); // spacer
+        $rows[] = $this->blankRow(); // spacer
+        $rows[] = $this->row([       // TOTAL
+            'A' => 'TOTAL',
+            'I' => $this->fmt($this->summary['cash_out'] ?? 0),
+            'J' => $this->fmt($this->summary['cash_in'] ?? 0),
+        ]);
 
         return $rows;
     }
+
+    // -------------------------------------------------------------------------
+    // Events
+    // -------------------------------------------------------------------------
 
     public function registerEvents(): array
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $sheet     = $event->sheet->getDelegate();
-                $colLast   = 'K';
-                $allData   = $this->array();
-                $totalRows = count($allData);
+                $sheet    = $event->sheet->getDelegate();
+                $template = IOFactory::load(base_path(self::TEMPLATE))->getActiveSheet();
 
-                // ── Merge & gaya baris judul (R1–R4)
-                foreach ([1, 2, 3, 4] as $r) {
-                    $sheet->mergeCells("A{$r}:{$colLast}{$r}");
-                }
+                $this->applyColumnWidths($sheet, $template);
+                $this->applyStaticStyles($sheet);
+                $this->applyMerges($sheet, $template);
+                $this->applyDynamicTableStyle($sheet);
 
-                $sheet->getStyle('A1')->applyFromArray([
-                    'font'      => ['bold' => true, 'size' => 18, 'color' => ['argb' => 'FF' . self::COLOR_WHITE], 'name' => 'Arial'],
-                    'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FF' . self::COLOR_HEADER_BG]],
-                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-                ]);
-                $sheet->getRowDimension(1)->setRowHeight(36);
-
-                $sheet->getStyle('A2')->applyFromArray([
-                    'font'      => ['bold' => true, 'size' => 13, 'color' => ['argb' => 'FF' . self::COLOR_WHITE], 'name' => 'Arial'],
-                    'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FF' . self::COLOR_SUBHEADER_BG]],
-                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
-                ]);
-                $sheet->getRowDimension(2)->setRowHeight(24);
-
-                foreach ([3, 4] as $r) {
-                    $sheet->getStyle("A{$r}")->applyFromArray([
-                        'font'      => ['italic' => true, 'size' => 10, 'color' => ['argb' => 'FF' . self::COLOR_TEXT_DARK], 'name' => 'Arial'],
-                        'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFD6E4F7']],
-                        'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
-                    ]);
-                    $sheet->getRowDimension($r)->setRowHeight(18);
-                }
-
-                $sheet->getRowDimension(5)->setRowHeight(6);
-
-                // ── Blok ringkasan (R6–R10)
-                $sheet->mergeCells("A6:{$colLast}6");
-                $sheet->getStyle('A6')->applyFromArray([
-                    'font'      => ['bold' => true, 'size' => 11, 'color' => ['argb' => 'FF' . self::COLOR_WHITE], 'name' => 'Arial'],
-                    'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FF' . self::COLOR_SUBHEADER_BG]],
-                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'indent' => 1],
-                ]);
-                $sheet->getRowDimension(6)->setRowHeight(20);
-
-                foreach (range(7, 10) as $r) {
-                    $sheet->getStyle("A{$r}:{$colLast}{$r}")->applyFromArray([
-                        'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FF' . self::COLOR_SUMMARY_BG]],
-                        'font' => ['name' => 'Arial', 'size' => 10],
-                    ]);
-                    foreach (['A', 'E'] as $col) {
-                        $sheet->getStyle("{$col}{$r}")->applyFromArray([
-                            'font'      => ['bold' => true, 'color' => ['argb' => 'FF' . self::COLOR_HEADER_BG]],
-                            'alignment' => ['indent' => 1],
-                        ]);
-                    }
-                    foreach (['B', 'F'] as $col) {
-                        $sheet->getStyle("{$col}{$r}")->getFont()->setBold(true);
-                    }
-                    $sheet->getRowDimension($r)->setRowHeight(18);
-                }
-
-                // Net cash flow merah jika negatif
-                $netFlow      = $this->summary['net_cash_flow'];
-                $netFlowColor = $netFlow >= 0 ? '1B5E20' : 'B71C1C';
-                $sheet->getStyle('F7')->getFont()->setBold(true)->getColor()->setARGB('FF' . $netFlowColor);
-
-                $sheet->getRowDimension(11)->setRowHeight(6);
-
-                // ── Header tabel
-                $headerRow = $this->dataStartRow;
-                $sheet->getStyle("A{$headerRow}:{$colLast}{$headerRow}")->applyFromArray([
-                    'font'      => ['bold' => true, 'size' => 10, 'color' => ['argb' => 'FF' . self::COLOR_WHITE], 'name' => 'Arial'],
-                    'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FF' . self::COLOR_HEADER_BG]],
-                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true],
-                    'borders'   => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['argb' => 'FF' . self::COLOR_WHITE]]],
-                ]);
-                $sheet->getRowDimension($headerRow)->setRowHeight(28);
-
-                // ── Baris data
-                $dataFirstRow = $headerRow + 1;
-                $dataLastRow  = $totalRows - 2; // -2: spacer + baris total di akhir
-
-                for ($r = $dataFirstRow; $r <= $dataLastRow; $r++) {
-                    $isEven = (($r - $dataFirstRow) % 2 === 1);
-                    $sheet->getStyle("A{$r}:{$colLast}{$r}")->applyFromArray([
-                        'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => $isEven ? ('FF' . self::COLOR_ACCENT_BG) : 'FFFFFFFF']],
-                        'font'      => ['name' => 'Arial', 'size' => 9],
-                        'borders'   => ['allBorders' => ['borderStyle' => Border::BORDER_HAIR, 'color' => ['argb' => 'FF' . self::COLOR_BORDER]]],
-                        'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
-                    ]);
-
-                    $sheet->getStyle("A{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                    $sheet->getStyle("B{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                    foreach (['H', 'I', 'J'] as $col) {
-                        $sheet->getStyle("{$col}{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-                    }
-                    $sheet->getStyle("K{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                    $statusVal = $sheet->getCell("K{$r}")->getValue();
-                    $this->applyStatusColor($sheet, "K{$r}", $statusVal);
-
-                    $sheet->getRowDimension($r)->setRowHeight(16);
-                }
-
-                // ── Baris total
-                $totalRow = $totalRows;
-                $sheet->getStyle("A{$totalRow}:{$colLast}{$totalRow}")->applyFromArray([
-                    'font'      => ['bold' => true, 'size' => 10, 'color' => ['argb' => 'FF' . self::COLOR_WHITE], 'name' => 'Arial'],
-                    'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FF' . self::COLOR_HEADER_BG]],
-                    'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
-                ]);
-                foreach (['H', 'I', 'J'] as $col) {
-                    $sheet->getStyle("{$col}{$totalRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-                }
-                $sheet->getRowDimension($totalRow)->setRowHeight(20);
-
-                // ── Outer border seluruh tabel
-                $sheet->getStyle("A{$headerRow}:{$colLast}{$totalRow}")->applyFromArray([
-                    'borders' => ['outline' => ['borderStyle' => Border::BORDER_MEDIUM, 'color' => ['argb' => 'FF' . self::COLOR_SUBHEADER_BG]]],
-                ]);
-
-                // ── Freeze pane di bawah header tabel
-                $sheet->freezePane("A{$dataFirstRow}");
-
-                // ── Lebar kolom
-                $widths = [
-                    'A' => 5,
-                    'B' => 13,
-                    'C' => 18,
-                    'D' => 24,
-                    'E' => 20,
-                    'F' => 28,
-                    'G' => 18,
-                    'H' => 18,
-                    'I' => 18,
-                    'J' => 18,
-                    'K' => 18
-                ];
-                foreach ($widths as $col => $w) {
-                    $sheet->getColumnDimension($col)->setWidth($w);
-                }
-
+                $sheet->freezePane('A13');
                 $event->sheet->setTitle('Laporan Transaksi');
             },
         ];
     }
 
-    protected function fmt(float $value): string
+    // -------------------------------------------------------------------------
+    // Column widths (from template file)
+    // -------------------------------------------------------------------------
+
+    private function applyColumnWidths($sheet, $template): void
+    {
+        foreach (range('A', self::COL_LAST) as $col) {
+            $sheet->getColumnDimension($col)
+                  ->setWidth($template->getColumnDimension($col)->getWidth());
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Static styles (rows 1-13)
+    //
+    // Every value here is taken directly from template inspection.
+    // Using applyFromArray() instead of duplicateStyle() because
+    // duplicateStyle() only copies the top-left cell's style when the source
+    // range contains merged cells, silently flattening per-cell fills/borders.
+    // -------------------------------------------------------------------------
+
+    private function applyStaticStyles($sheet): void
+    {
+        // Row heights
+        foreach ([
+            1 => 4.05,  2 => 42.0,  3 => 18.0,  4 => 4.05,
+            5 => 10.05, 6 => 22.05, 7 => 22.05, 8 => 22.05,
+            9 => 22.05, 10 => 4.05, 11 => 7.95,  12 => 28.05, 13 => 24.0,
+        ] as $row => $h) {
+            $sheet->getRowDimension($row)->setRowHeight($h);
+        }
+
+        // ── Row 1 – thin accent bar ───────────────────────────────────────────
+        $sheet->getStyle('A1:K1')->applyFromArray($this->sf('FF28A455'));
+
+        // ── Row 2 – banner ────────────────────────────────────────────────────
+        $sheet->getStyle('A2:G2')->applyFromArray(
+            $this->sf('FF1E6B3C') + $this->fnt(20, true, 'FFFFFFFF', Alignment::HORIZONTAL_CENTER)
+        );
+        $sheet->getStyle('H2:I2')->applyFromArray(
+            $this->sf('FF256E42') + $this->fnt(28, true, 'FFFFFFFF', Alignment::HORIZONTAL_CENTER)
+        );
+        // J2:K2 needs wrapText=true so the \n in "Nasabah Aktif\n{period}" renders
+        $sheet->getStyle('J2:K2')->applyFromArray(
+            $this->sf('FF1E6B3C') + $this->fnt(9, false, 'FFA8D5B5', Alignment::HORIZONTAL_CENTER, true)
+        );
+
+        // ── Row 3 – subtitle bar ──────────────────────────────────────────────
+        $sheet->getStyle('A3:K3')->applyFromArray(
+            $this->sf('FF28A455') + $this->fnt(10, false, 'FFFFFFFF', Alignment::HORIZONTAL_CENTER)
+        );
+
+        // ── Rows 4-5 – spacers ────────────────────────────────────────────────
+        $sheet->getStyle('A4:K4')->applyFromArray($this->sf('FFA8D5B5'));
+        $sheet->getStyle('A5:K5')->applyFromArray($this->sf('FFF2FAF5'));
+
+        // ── Row 6 – Ringkasan header ──────────────────────────────────────────
+        $sheet->getStyle('A6:K6')->applyFromArray(
+            $this->sf('FFE8F5ED')
+            + $this->fnt(10, true, 'FF1A6035', Alignment::HORIZONTAL_LEFT)
+            + ['borders' => [
+                'top'    => $this->bd(Border::BORDER_MEDIUM, 'FFA8D5B5'),
+                'bottom' => $this->bd(Border::BORDER_THIN,   'FFA8D5B5'),
+            ]]
+        );
+        $sheet->getStyle('A6')->applyFromArray(['borders' => ['left'  => $this->bd(Border::BORDER_MEDIUM, 'FF28A455')]]);
+        $sheet->getStyle('K6')->applyFromArray(['borders' => ['right' => $this->bd(Border::BORDER_MEDIUM, 'FF28A455')]]);
+
+        // ── Rows 7-9 – summary data ───────────────────────────────────────────
+        //   Row 7: label fill FFF2FAF5, bottom=hair
+        //   Row 8: label fill FFE8F5ED, bottom=hair
+        //   Row 9: label fill FFF2FAF5, bottom=medium (closing border)
+        $this->applySummaryRow($sheet, 7, 'FFF2FAF5', Border::BORDER_HAIR,   false);
+        $this->applySummaryRow($sheet, 8, 'FFE8F5ED', Border::BORDER_HAIR,   false);
+        $this->applySummaryRow($sheet, 9, 'FFF2FAF5', Border::BORDER_MEDIUM, true);
+
+        // ── Rows 10-11 – spacers ──────────────────────────────────────────────
+        $sheet->getStyle('A10:K10')->applyFromArray($this->sf('FFA8D5B5'));
+        $sheet->getStyle('A11:K11')->applyFromArray($this->sf('FFF2FAF5'));
+
+        // ── Row 12 – table column headers ─────────────────────────────────────
+        $sheet->getStyle('A12:K12')->applyFromArray(
+            $this->sf('FF1E6B3C')
+            + $this->fnt(9, true, 'FFFFFFFF', Alignment::HORIZONTAL_CENTER, true)
+            + ['borders' => [
+                'top'        => $this->bd(Border::BORDER_MEDIUM, 'FF0D3322'),
+                'bottom'     => $this->bd(Border::BORDER_MEDIUM, 'FF0D3322'),
+                'allBorders' => $this->bd(Border::BORDER_THIN,   'FF28A455'),
+            ]]
+        );
+
+        // ── Row 13 – blank data-template row ──────────────────────────────────
+        $sheet->getStyle('A13:K13')->applyFromArray(
+            $this->sf('FFFFFFFF')
+            + $this->fnt(9, false, 'FF1A1A2E')
+            + ['borders' => ['allBorders' => $this->bd(Border::BORDER_HAIR, 'FFA8D5B5')]]
+        );
+        $sheet->getStyle('A13')->applyFromArray(['borders' => ['left'  => $this->bd(Border::BORDER_THIN, 'FFA8D5B5')]]);
+        $sheet->getStyle('K13')->applyFromArray(['borders' => ['right' => $this->bd(Border::BORDER_THIN, 'FFA8D5B5')]]);
+    }
+
+    /**
+     * Style one row of the Ringkasan (summary) section.
+     *
+     * Layout per row:
+     *   A:C  label  (left panel)   – $labelFill background
+     *   D:E  value  (left panel)   – cream FFFEF9EC background, gold text
+     *   F    separator column      – mint FFA8D5B5 fill
+     *   G:I  label  (right panel)  – $labelFill background
+     *   J:K  value  (right panel)  – cream FFFEF9EC background, gold text
+     */
+    private function applySummaryRow($sheet, int $row, string $labelFill, string $btmBorder, bool $isLast): void
+    {
+        // Left label
+        $sheet->getStyle("A{$row}:C{$row}")->applyFromArray(
+            $this->sf($labelFill)
+            + $this->fnt(9, false, 'FF0F3D22', Alignment::HORIZONTAL_LEFT)
+            + ['borders' => ['bottom' => $this->bd($btmBorder, 'FFA8D5B5')]]
+        );
+        $sheet->getStyle("A{$row}")->applyFromArray(['borders' => ['left' => $this->bd(Border::BORDER_MEDIUM, 'FF28A455')]]);
+
+        // Left value
+        $sheet->getStyle("D{$row}:E{$row}")->applyFromArray(
+            $this->sf('FFFEF9EC')
+            + $this->fnt(11, true, 'FFC47D0E', Alignment::HORIZONTAL_CENTER)
+            + ['borders' => ['bottom' => $this->bd($btmBorder, 'FFA8D5B5')]]
+        );
+
+        // Separator
+        $sheet->getStyle("F{$row}")->applyFromArray($this->sf('FFA8D5B5'));
+
+        // Right label
+        $sheet->getStyle("G{$row}:I{$row}")->applyFromArray(
+            $this->sf($labelFill)
+            + $this->fnt(9, false, 'FF0F3D22', Alignment::HORIZONTAL_LEFT)
+            + ['borders' => ['bottom' => $this->bd($btmBorder, 'FFA8D5B5')]]
+        );
+
+        // Right value
+        $sheet->getStyle("J{$row}:K{$row}")->applyFromArray(
+            $this->sf('FFFEF9EC')
+            + $this->fnt(11, true, 'FFC47D0E', Alignment::HORIZONTAL_CENTER)
+            + ['borders' => [
+                'bottom' => $this->bd($btmBorder, 'FFA8D5B5'),
+                'right'  => $this->bd(Border::BORDER_MEDIUM, 'FF28A455'),
+            ]]
+        );
+
+        // Row 9 (last): override bottom with a medium green border across the full width
+        if ($isLast) {
+            $sheet->getStyle("A{$row}:K{$row}")->applyFromArray([
+                'borders' => ['bottom' => $this->bd(Border::BORDER_MEDIUM, 'FF28A455')],
+            ]);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Merge cells (copied from template, skipping dynamic rows)
+    // -------------------------------------------------------------------------
+
+    private function applyMerges($sheet, $template): void
+    {
+        foreach ($template->getMergeCells() as $range) {
+            if (str_starts_with($range, 'A14:') || str_starts_with($range, 'A17:')) {
+                continue;
+            }
+            $sheet->mergeCells($range);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Dynamic table body (data rows + spacer + total row)
+    // -------------------------------------------------------------------------
+
+    private function applyDynamicTableStyle($sheet): void
+    {
+        $dataStyle = $this->sf('FFFFFFFF')
+            + $this->fnt(9, false, 'FF1A1A2E')
+            + ['borders' => ['allBorders' => $this->bd(Border::BORDER_HAIR, 'FFA8D5B5')]];
+
+        if (!$this->hasData) {
+            $sheet->mergeCells("A{$this->dataStartRow}:K{$this->dataStartRow}");
+            $sheet->getStyle("A{$this->dataStartRow}:K{$this->dataStartRow}")->applyFromArray(
+                $this->sf('FFF2FAF5')
+                + $this->fnt(9, false, 'FF666666', Alignment::HORIZONTAL_CENTER)
+                + ['borders' => ['allBorders' => $this->bd(Border::BORDER_HAIR, 'FFA8D5B5')]]
+            );
+            $sheet->getRowDimension($this->dataStartRow)->setRowHeight(24);
+        } else {
+            for ($row = $this->dataStartRow; $row < $this->dataStartRow + $this->dataCount; $row++) {
+                $sheet->getStyle("A{$row}:K{$row}")->applyFromArray($dataStyle);
+                $sheet->getStyle("A{$row}")->applyFromArray(['borders' => ['left'  => $this->bd(Border::BORDER_THIN, 'FFA8D5B5')]]);
+                $sheet->getStyle("K{$row}")->applyFromArray(['borders' => ['right' => $this->bd(Border::BORDER_THIN, 'FFA8D5B5')]]);
+
+                $sheet->getRowDimension($row)->setRowHeight(24);
+
+                $sheet->getStyle("A{$row}:C{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("H{$row}:J{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("K{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("A{$row}:K{$row}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+                $this->applyStatusColor($sheet, "K{$row}", $sheet->getCell("K{$row}")->getValue());
+            }
+        }
+
+        // Spacer before total
+        $sheet->getRowDimension($this->totalRow - 1)->setRowHeight(7.95);
+
+        // ── TOTAL row ─────────────────────────────────────────────────────────
+        $sheet->mergeCells("A{$this->totalRow}:H{$this->totalRow}");
+        $sheet->getRowDimension($this->totalRow)->setRowHeight(22.05);
+
+        // A:H – label
+        $sheet->getStyle("A{$this->totalRow}:H{$this->totalRow}")->applyFromArray(
+            $this->sf('FF1E6B3C')
+            + $this->fnt(11, true, 'FFFFFFFF', Alignment::HORIZONTAL_CENTER)
+            + ['borders' => ['right' => $this->bd(Border::BORDER_THIN, 'FF28A455')]]
+        );
+        // I:J – totals
+        $sheet->getStyle("I{$this->totalRow}:J{$this->totalRow}")->applyFromArray(
+            $this->sf('FF1A5530')
+            + $this->fnt(11, true, 'FFC8F0D8', Alignment::HORIZONTAL_CENTER)
+            + ['borders' => [
+                'top'        => $this->bd(Border::BORDER_MEDIUM, 'FF28A455'),
+                'allBorders' => $this->bd(Border::BORDER_THIN,   'FF28A455'),
+            ]]
+        );
+        // K – right cap
+        $sheet->getStyle("K{$this->totalRow}")->applyFromArray(
+            $this->sf('FF1E6B3C')
+            + ['borders' => ['top' => $this->bd(Border::BORDER_MEDIUM, 'FF28A455')]]
+        );
+
+        // Outer outline around the whole table section
+        $sheet->getStyle('A12:K' . $this->totalRow)->applyFromArray([
+            'borders' => ['outline' => $this->bd(Border::BORDER_MEDIUM, 'FF1E6B3C')],
+        ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Row builders
+    // -------------------------------------------------------------------------
+
+    private function recordRow($record, int $number): array
+    {
+        $tanggal        = data_get($record, 'tanggal') ?? data_get($record, 'tgl_gadai');
+        $barangKategori = data_get($record, 'barang.kategori');
+        $taksiran       = data_get($record, 'taksiran')
+            ?? data_get($record, 'nilai_taksiran_akhir')
+            ?? data_get($record, 'nilai_taksiran_max')
+            ?? data_get($record, 'nilai_taksiran_min')
+            ?? 0;
+
+        return [
+            $number,
+            $tanggal ? Carbon::parse($tanggal)->format('d/m/Y') : '-',
+            data_get($record, 'no_sbg')            ?? '-',
+            data_get($record, 'nasabah.nama')       ?? '-',
+            data_get($record, 'branch.nama')        ?? '-',
+            data_get($record, 'barang.nama_barang') ?? '-',
+            $this->labelKategori($barangKategori),
+            $this->fmt((float) $taksiran),
+            $this->fmt((float) (data_get($record, 'cash_out') ?? data_get($record, 'nilai_pinjaman') ?? 0)),
+            $this->fmt((float) (data_get($record, 'cash_in') ?? 0)),
+            $this->labelStatus(data_get($record, 'status')),
+        ];
+    }
+
+    private function row(array $values): array
+    {
+        $row = $this->blankRow();
+        foreach ($values as $col => $val) {
+            $row[ord($col) - ord('A')] = $val;
+        }
+        return $row;
+    }
+
+    private function blankRow(): array
+    {
+        return array_fill(0, self::COLS, null);
+    }
+
+    // -------------------------------------------------------------------------
+    // Style micro-helpers
+    // -------------------------------------------------------------------------
+
+    /** Solid fill array fragment */
+    private function sf(string $argb): array
+    {
+        return ['fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => $argb]]];
+    }
+
+    /**
+     * Font + alignment array fragment.
+     * @param bool $wrap  Set wrapText=true (required for \n line-breaks in cells).
+     */
+    private function fnt(
+        int    $size,
+        bool   $bold,
+        string $argb,
+        string $hAlign = Alignment::HORIZONTAL_LEFT,
+        bool   $wrap   = false,
+    ): array {
+        return [
+            'font'      => ['name' => 'Calibri', 'size' => $size, 'bold' => $bold, 'color' => ['argb' => $argb]],
+            'alignment' => ['horizontal' => $hAlign, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => $wrap],
+        ];
+    }
+
+    /** Single border-side array fragment */
+    private function bd(string $style, string $argb): array
+    {
+        return ['borderStyle' => $style, 'color' => ['argb' => $argb]];
+    }
+
+    // -------------------------------------------------------------------------
+    // Collection helper
+    // -------------------------------------------------------------------------
+
+    private function recordsCollection(): Collection
+    {
+        return $this->records instanceof Collection ? $this->records : collect($this->records);
+    }
+
+    // -------------------------------------------------------------------------
+    // Formatters
+    // -------------------------------------------------------------------------
+
+    private function fmt(float $value): string
     {
         return 'Rp ' . number_format($value, 0, ',', '.');
     }
 
-    protected function fmtSign(float $value): string
+    private function fmtSign(float $value): string
     {
         return ($value >= 0 ? '+' : '') . 'Rp ' . number_format($value, 0, ',', '.');
     }
 
-    protected function labelKategori(?string $k): string
+    // -------------------------------------------------------------------------
+    // Label maps
+    // -------------------------------------------------------------------------
+
+    private function labelKategori(?string $category): string
     {
-        return match ($k) {
+        return match ($category) {
             'handphone'           => 'Handphone',
             'laptop'              => 'Laptop',
             'tablet'              => 'Tablet',
@@ -285,13 +476,13 @@ class TransactionReportExport implements FromArray, ShouldAutoSize, WithEvents
             'kendaraan_motor'     => 'Kendaraan Motor',
             'barang_rumah_tangga' => 'Barang Rumah Tangga',
             'perhiasan'           => 'Perhiasan',
-            default               => Str::title(str_replace('_', ' ', $k ?? '-')),
+            default               => Str::title(str_replace('_', ' ', $category ?? '-')),
         };
     }
 
-    protected function labelStatus(?string $s): string
+    private function labelStatus(?string $status): string
     {
-        return match ($s) {
+        return match ($status) {
             'menunggu_approval' => 'Menunggu Approval',
             'disetujui'         => 'Disetujui',
             'ditolak'           => 'Ditolak',
@@ -300,21 +491,26 @@ class TransactionReportExport implements FromArray, ShouldAutoSize, WithEvents
             'perpanjangan'      => 'Perpanjangan',
             'lunas'             => 'Lunas',
             'lelang'            => 'Lelang',
-            default             => Str::title(str_replace('_', ' ', $s ?? '-')),
+            default             => Str::title(str_replace('_', ' ', $status ?? '-')),
         };
     }
 
-    protected function applyStatusColor($sheet, string $cell, ?string $label): void
+    // -------------------------------------------------------------------------
+    // Status colour
+    // -------------------------------------------------------------------------
+
+    private function applyStatusColor($sheet, string $cell, ?string $label): void
     {
         $color = match ($label) {
-            'Aktif'             => '1B5E20',
-            'Lunas'             => '0D47A1',
-            'Jatuh Tempo'       => 'E65100',
-            'Ditolak', 'Lelang' => 'B71C1C',
-            'Perpanjangan'      => '4A148C',
-            'Menunggu Approval' => '795548',
-            default             => self::COLOR_TEXT_DARK,
+            'Aktif'              => '1B5E20',
+            'Lunas'              => '0D47A1',
+            'Jatuh Tempo'        => 'E65100',
+            'Ditolak', 'Lelang'  => 'B71C1C',
+            'Perpanjangan'       => '4A148C',
+            'Menunggu Approval'  => '795548',
+            default              => '1A1A2E',
         };
+
         $sheet->getStyle($cell)->applyFromArray([
             'font' => ['bold' => true, 'color' => ['argb' => 'FF' . $color]],
         ]);
