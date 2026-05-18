@@ -117,39 +117,6 @@
         </div>
     </div>
 
-    {{-- Harga Emas XAU --}}
-    <div
-        class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] mb-6">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Harga Emas XAU Saat Ini</span>
-                <h4 class="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-                    @if ($goldRateIdr)
-                        Rp {{ number_format($goldRateIdr, 0, ',', '.') }}
-                    @elseif($goldRateUsd)
-                        Rp -
-                    @else
-                        -
-                    @endif
-                </h4>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    @if ($goldRateUsd)
-                        USD {{ number_format($goldRateUsd, 2, '.', ',') }}
-                        @if ($usdIdrRate)
-                            • Kurs USD/IDR {{ number_format($usdIdrRate, 2, ',', '.') }}
-                        @endif
-                    @else
-                        Data XAU/USD tidak tersedia.
-                    @endif
-                </p>
-            </div>
-            <div
-                class="rounded-2xl px-4 py-3 text-sm font-medium {{ $goldError ? 'bg-warning-50 text-warning-600 dark:bg-warning-500/15 dark:text-orange-400' : 'bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500' }}">
-                {{ $goldError ?? 'Dikonversi ke IDR secara real-time' }}
-            </div>
-        </div>
-    </div>
-
     {{-- Chart Row --}}
     <div class="grid grid-cols-12 gap-4 md:gap-6 mb-6">
 
