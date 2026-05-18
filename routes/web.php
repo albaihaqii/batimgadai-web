@@ -7,6 +7,7 @@ use App\Http\Controllers\MobileSlideController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
 use App\Models\HeroSlide;
+use App\Http\Controllers\MarketPriceController;
 
 // Landing Page
 Route::get('/', fn() => view('frontend.index', [
@@ -136,6 +137,12 @@ Route::prefix('superadmin')
         Route::post('/transaksi/pelunasan', [App\Http\Controllers\PelunasanController::class, 'store'])->name('transaksi.pelunasan.store');
         Route::get('/transaksi/pelunasan/{pelunasan}', [App\Http\Controllers\PelunasanController::class, 'show'])->name('transaksi.pelunasan.show');
         Route::post('/transaksi/pelunasan/{pelunasan}/retry', [App\Http\Controllers\PelunasanController::class, 'retry'])->name('transaksi.pelunasan.retry');
+
+        // Simulasi Harga Gadai (Internal)
+        Route::get('/simulasi', [App\Http\Controllers\SimulationController::class, 'index'])->name('simulasi');
+        Route::post('/simulasi/estimate', [App\Http\Controllers\SimulationController::class, 'estimate'])->name('simulasi.estimate');
+        Route::get('/simulasi/merks', [App\Http\Controllers\SimulationController::class, 'getMerks'])->name('simulasi.merks');
+        Route::get('/simulasi/tipe-models', [App\Http\Controllers\SimulationController::class, 'getTipeModels'])->name('simulasi.tipe-models');
     });
 
 // Admin
