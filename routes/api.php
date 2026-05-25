@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\LockerController;
 use App\Http\Controllers\Api\GadaiController;
 use App\Http\Controllers\Api\ApprovalController;
+use App\Http\Controllers\SimulationController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -58,6 +59,11 @@ Route::prefix('mobile')->group(function () {
             ]);
         return response()->json(['success' => true, 'data' => $cabang]);
     });
+
+    Route::get('/simulasi', [SimulationController::class, 'apiOptions']);
+    Route::get('/simulasi/merks', [SimulationController::class, 'apiMerks']);
+    Route::get('/simulasi/tipe-models', [SimulationController::class, 'apiTipeModels']);
+    Route::post('/simulasi/estimate', [SimulationController::class, 'estimate']);
 
     // Helper: hitung jasa dari tabel jasa_rates
     $getJasaRate = function (int $nilaiPinjaman, string $tipeJasa, string $col = 'jasa_30_hari'): array {

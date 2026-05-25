@@ -42,6 +42,37 @@ class SimulationController extends Controller
     }
 
     /**
+     * API mobile: ambil opsi awal untuk form simulasi.
+     */
+    public function apiOptions()
+    {
+        $kategoris = Barang::select('kategori')
+            ->whereNotNull('kategori')
+            ->where('kategori', '!=', '')
+            ->distinct()
+            ->orderBy('kategori')
+            ->pluck('kategori');
+
+        $kondisi = [
+            ['value' => 'baik', 'label' => 'Baik'],
+            ['value' => 'cukup', 'label' => 'Cukup'],
+            ['value' => 'rusak_ringan', 'label' => 'Rusak Ringan'],
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'kategori' => $kategoris,
+                'kondisi' => $kondisi,
+                'stats' => [
+                    'total_transaksi' => Gadai::whereIn('status', ['aktif', 'perpanjangan', 'lunas', 'jatuh_tempo'])->count(),
+                    'total_barang' => Barang::count(),
+                ],
+            ],
+        ]);
+    }
+
+    /**
      * Proses simulasi estimasi harga gadai berdasarkan histori transaksi internal.
      *
      * Pendekatan estimasi:
@@ -158,6 +189,29 @@ class SimulationController extends Controller
     }
 
     /**
+     * API mobile: ambil daftar merk berdasarkan kategori.
+     */
+    public function apiMerks(Request $request)
+    {
+        $request->validate([
+            'kategori' => 'required|string',
+        ]);
+
+        $merks = Barang::where('kategori', $request->get('kategori'))
+            ->whereNotNull('merk')
+            ->where('merk', '!=', '')
+            ->select('merk')
+            ->distinct()
+            ->orderBy('merk')
+            ->pluck('merk');
+
+        return response()->json([
+            'success' => true,
+            'data' => $merks,
+        ]);
+    }
+
+    /**
      * API: Ambil daftar tipe/model berdasarkan kategori dan merk.
      */
     public function getTipeModels(Request $request)
@@ -179,6 +233,35 @@ class SimulationController extends Controller
             ->pluck('tipe_model');
 
         return response()->json($tipeModels);
+    }
+
+    /**
+     * API mobile: ambil daftar tipe/model berdasarkan kategori dan merk.
+     */
+    public function apiTipeModels(Request $request)
+    {
+        $request->validate([
+            'kategori' => 'required|string',
+            'merk' => 'nullable|string',
+        ]);
+
+        $query = Barang::where('kategori', $request->get('kategori'))
+            ->whereNotNull('tipe_model')
+            ->where('tipe_model', '!=', '');
+
+        if ($request->filled('merk')) {
+            $query->where('merk', 'like', '%' . $request->get('merk') . '%');
+        }
+
+        $tipeModels = $query->select('tipe_model')
+            ->distinct()
+            ->orderBy('tipe_model')
+            ->pluck('tipe_model');
+
+        return response()->json([
+            'success' => true,
+            'data' => $tipeModels,
+        ]);
     }
 
     /**

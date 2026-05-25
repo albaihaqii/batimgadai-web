@@ -107,22 +107,22 @@
 
         {{-- Summary Cards --}}
         @if (isset($summary))
-            <div class="grid grid-cols-2 gap-3 px-6 pb-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+            <div class="grid grid-cols-2 gap-3 px-6 pb-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                 <div class="rounded-xl border border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/50">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Total UP</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Total Pinjaman Dicairkan</p>
                     <p class="mt-1 text-sm font-semibold text-gray-800 dark:text-white/90">
                         Rp {{ number_format($summary['total_up'], 0, ',', '.') }}
                     </p>
                 </div>
                 <div class="rounded-xl border border-red-100 bg-red-50 p-3 dark:border-red-500/20 dark:bg-red-500/5">
-                    <p class="text-xs text-red-500 dark:text-red-400">Uang Keluar</p>
+                    <p class="text-xs text-red-500 dark:text-red-400">Dana Keluar ke Nasabah</p>
                     <p class="mt-1 text-sm font-semibold text-red-600 dark:text-red-400">
                         Rp {{ number_format($summary['cash_out'], 0, ',', '.') }}
                     </p>
                 </div>
                 <div
                     class="rounded-xl border border-green-100 bg-green-50 p-3 dark:border-green-500/20 dark:bg-green-500/5">
-                    <p class="text-xs text-green-500 dark:text-green-400">Uang Masuk</p>
+                    <p class="text-xs text-green-500 dark:text-green-400">Dana Masuk dari Pembayaran</p>
                     <p class="mt-1 text-sm font-semibold text-green-600 dark:text-green-400">
                         Rp {{ number_format($summary['cash_in'], 0, ',', '.') }}
                     </p>
@@ -133,7 +133,7 @@
                         ? 'border-blue-100 bg-blue-50 dark:border-blue-500/20 dark:bg-blue-500/5'
                         : 'border-orange-100 bg-orange-50 dark:border-orange-500/20 dark:bg-orange-500/5' }}">
                     <p class="text-xs {{ $summary['net_cash_flow'] >= 0 ? 'text-blue-500' : 'text-orange-500' }}">
-                        Net Cash Flow
+                        Selisih Uang Masuk/Keluar
                     </p>
                     <p
                         class="mt-1 text-sm font-semibold
@@ -142,20 +142,14 @@
                     </p>
                 </div>
                 <div class="rounded-xl border border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/50">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Sewa Modal</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Pendapatan Jasa</p>
                     <p class="mt-1 text-sm font-semibold text-gray-800 dark:text-white/90">
                         Rp {{ number_format($summary['total_sewa_modal'], 0, ',', '.') }}
                     </p>
                 </div>
-                <div class="rounded-xl border border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/50">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Total Admin</p>
-                    <p class="mt-1 text-sm font-semibold text-gray-800 dark:text-white/90">
-                        Rp {{ number_format($summary['total_admin'], 0, ',', '.') }}
-                    </p>
-                </div>
                 <div
                     class="rounded-xl border border-purple-100 bg-purple-50 p-3 dark:border-purple-500/20 dark:bg-purple-500/5">
-                    <p class="text-xs text-purple-500 dark:text-purple-400">Nasabah Aktif</p>
+                    <p class="text-xs text-purple-500 dark:text-purple-400">Nasabah Gadai Baru</p>
                     <p class="mt-1 text-sm font-semibold text-purple-600 dark:text-purple-400">
                         {{ $summary['active_customers'] }}
                     </p>
