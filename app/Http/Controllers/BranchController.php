@@ -22,7 +22,6 @@ class BranchController extends Controller
             });
         }
 
-        // Export PDF
         if ($request->has('export')) {
             $branches = $query->latest()->get();
             $pdf = Pdf::loadView('exports.branches', compact('branches'))
@@ -44,19 +43,29 @@ class BranchController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode'    => 'required|string|max:10|unique:cabang,kode',
-            'nama'    => 'required|string|max:100',
-            'alamat'  => 'nullable|string',
-            'no_telp' => 'nullable|string|max:20',
-            'status'  => 'required|in:aktif,nonaktif',
+            'kode'      => 'required|string|max:10|unique:cabang,kode',
+            'nama'      => 'required|string|max:100',
+            'alamat'    => 'nullable|string',
+            'latitude'  => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'hari_buka' => 'nullable|string|max:50',
+            'jam_buka'  => 'nullable|string|max:10',
+            'jam_tutup' => 'nullable|string|max:10',
+            'no_telp'   => 'nullable|string|max:20',
+            'maps_url'  => 'nullable|string',
+            'status'    => 'required|in:aktif,nonaktif',
         ], [
             'kode.unique' => 'Kode cabang sudah digunakan.',
         ]);
 
-        Branch::create($request->only(['kode', 'nama', 'alamat', 'no_telp', 'maps_url', 'status']));
+        Branch::create($request->only([
+            'kode', 'nama', 'alamat',
+            'latitude', 'longitude',
+            'hari_buka', 'jam_buka', 'jam_tutup',
+            'no_telp', 'maps_url', 'status',
+        ]));
 
-        return redirect()
-            ->route('superadmin.cabang')
+        return redirect()->route('superadmin.cabang')
             ->with('success', 'Data cabang berhasil ditambahkan.');
     }
 
@@ -68,37 +77,47 @@ class BranchController extends Controller
     public function update(Request $request, Branch $branch)
     {
         $request->validate([
-            'kode'    => 'required|string|max:10|unique:cabang,kode,' . $branch->id,
-            'nama'    => 'required|string|max:100',
-            'alamat'  => 'nullable|string',
-            'no_telp' => 'nullable|string|max:20',
-            'status'  => 'required|in:aktif,nonaktif',
+            'kode'      => 'required|string|max:10|unique:cabang,kode,' . $branch->id,
+            'nama'      => 'required|string|max:100',
+            'alamat'    => 'nullable|string',
+            'latitude'  => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'hari_buka' => 'nullable|string|max:50',
+            'jam_buka'  => 'nullable|string|max:10',
+            'jam_tutup' => 'nullable|string|max:10',
+            'no_telp'   => 'nullable|string|max:20',
+            'maps_url'  => 'nullable|string',
+            'status'    => 'required|in:aktif,nonaktif',
         ], [
             'kode.unique' => 'Kode cabang sudah digunakan.',
         ]);
 
-        $branch->update($request->only(['kode', 'nama', 'alamat', 'no_telp', 'maps_url', 'status']));
+        $branch->update($request->only([
+            'kode', 'nama', 'alamat',
+            'latitude', 'longitude',
+            'hari_buka', 'jam_buka', 'jam_tutup',
+            'no_telp', 'maps_url', 'status',
+        ]));
 
-        return redirect()
-            ->route('superadmin.cabang')
+        return redirect()->route('superadmin.cabang')
             ->with('success', 'Data cabang berhasil diperbarui.');
     }
 
     public function destroy(Branch $branch)
     {
-        // Cek apakah cabang masih punya user atau nasabah
         if ($branch->users()->count() > 0) {
-            return redirect()->back()->with('error', 'Cabang tidak dapat dihapus karena masih memiliki data user.');
+            return redirect()->back()
+                ->with('error', 'Cabang tidak dapat dihapus karena masih memiliki data user.');
         }
 
         if ($branch->customers()->count() > 0) {
-            return redirect()->back()->with('error', 'Cabang tidak dapat dihapus karena masih memiliki data nasabah.');
+            return redirect()->back()
+                ->with('error', 'Cabang tidak dapat dihapus karena masih memiliki data nasabah.');
         }
 
         $branch->delete();
 
-        return redirect()
-            ->route('superadmin.cabang')
+        return redirect()->route('superadmin.cabang')
             ->with('success', 'Data cabang berhasil dihapus.');
     }
 }

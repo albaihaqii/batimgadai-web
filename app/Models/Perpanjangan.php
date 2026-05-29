@@ -9,12 +9,12 @@ class Perpanjangan extends Model
     protected $table = 'perpanjangan';
 
     protected $fillable = [
-        'gadai_id', 'nasabah_id', 'officer_id', 'no_sbg',
-        'nilai_pinjaman', 'jasa_persen', 'jasa_nominal',
-        'denda_persen', 'denda_nominal', 'hari_terlambat',
-        'total_bayar', 'tgl_perpanjangan', 'tgl_jt_lama', 'tgl_jt_baru',
-        'status_bayar', 'metode_bayar',
-        'midtrans_order_id', 'midtrans_token', 'midtrans_url', 'midtrans_response',
+        'gadai_id', 'nasabah_id', 'officer_id', 'no_sbg', 'order_id',
+        'transaction_id', 'nilai_pinjaman', 'jasa_persen', 'jasa_nominal',
+        'denda_persen', 'denda_nominal', 'hari_terlambat', 'total_bayar',
+        'tgl_perpanjangan', 'tgl_jt_lama', 'tgl_jt_baru', 'status_bayar',
+        'metode_bayar', 'midtrans_order_id', 'midtrans_token', 'midtrans_url',
+        'midtrans_response',
     ];
 
     protected $casts = [
@@ -28,7 +28,7 @@ class Perpanjangan extends Model
         'midtrans_response' => 'array',
     ];
 
-    public function gadai()      { return $this->belongsTo(Gadai::class); }
-    public function nasabah()    { return $this->belongsTo(Customer::class, 'nasabah_id'); }
-    public function officer()    { return $this->belongsTo(User::class, 'officer_id'); }
+    public function gadai()   { return $this->belongsTo(Gadai::class); }
+    public function nasabah() { return $this->belongsTo(Customer::class, 'nasabah_id'); }
+    public function officer() { return $this->belongsTo(User::class, 'officer_id'); }
 }

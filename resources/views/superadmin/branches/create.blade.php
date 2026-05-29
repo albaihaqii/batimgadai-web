@@ -14,20 +14,18 @@
 
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
 
-            {{-- Kode Cabang --}}
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                     Kode Cabang <span class="text-red-500">*</span>
                     <span class="text-gray-400 font-normal">(maks. 10 karakter)</span>
                 </label>
                 <input type="text" name="kode" value="{{ old('kode') }}"
-                    placeholder="Contoh: SMG, MGL, KRM"
+                    placeholder="Contoh: SMG, MGL"
                     maxlength="10"
                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 {{ $errors->has('kode') ? 'border-red-500' : '' }}">
                 @error('kode') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Nama Cabang --}}
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                     Nama Cabang <span class="text-red-500">*</span>
@@ -38,18 +36,15 @@
                 @error('nama') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
-            {{-- No Telepon --}}
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                     No Telepon
                 </label>
                 <input type="text" name="no_telp" value="{{ old('no_telp') }}"
-                    placeholder="Contoh: 0812-1234-5678"
+                    placeholder="Contoh: 0331-123456"
                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                @error('no_telp') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Status --}}
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                     Status <span class="text-red-500">*</span>
@@ -66,30 +61,63 @@
                 </div>
             </div>
 
-            {{-- Alamat --}}
             <div class="md:col-span-2">
-                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                    Alamat
-                </label>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Alamat</label>
                 <textarea name="alamat" rows="3" placeholder="Masukkan alamat lengkap cabang"
                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">{{ old('alamat') }}</textarea>
                 @error('alamat') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
-        </div>
+            <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Latitude <span class="text-gray-400 font-normal">(GPS)</span>
+                </label>
+                <input type="text" name="latitude" value="{{ old('latitude') }}"
+                    placeholder="-8.1629"
+                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+            </div>
 
-        {{-- URL Google Maps --}}
+            <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Longitude <span class="text-gray-400 font-normal">(GPS)</span>
+                </label>
+                <input type="text" name="longitude" value="{{ old('longitude') }}"
+                    placeholder="113.7143"
+                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+            </div>
+
+            <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Hari Buka</label>
+                <input type="text" name="hari_buka" value="{{ old('hari_buka', 'Senin - Sabtu') }}"
+                    placeholder="Senin - Sabtu"
+                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+            </div>
+
+            <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Jam Buka</label>
+                <input type="text" name="jam_buka" value="{{ old('jam_buka', '07.00') }}"
+                    placeholder="07.00"
+                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+            </div>
+
+            <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Jam Tutup</label>
+                <input type="text" name="jam_tutup" value="{{ old('jam_tutup', '17.00') }}"
+                    placeholder="17.00"
+                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+            </div>
+
             <div class="md:col-span-2">
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                    URL Google Maps
-                    <span class="text-gray-400 font-normal">(Opsional)</span>
+                    URL Google Maps <span class="text-gray-400 font-normal">(Opsional)</span>
                 </label>
                 <input type="text" name="maps_url" value="{{ old('maps_url') }}"
                     placeholder="https://www.google.com/maps/embed?pb=..."
                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
             </div>
 
-        {{-- Buttons --}}
+        </div>
+
         <div class="flex items-center gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-800">
             <button type="submit"
                 class="rounded-lg bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white shadow-theme-xs hover:bg-brand-600 transition-colors">

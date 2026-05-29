@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
 
-{{-- Alert --}}
 @if(session('success'))
 <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium dark:bg-green-500/10 dark:border-green-500/20 dark:text-green-400">
     {{ session('success') }}
@@ -17,7 +16,6 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Kelola data nasabah BATIM GADAI</p>
         </div>
         <div class="flex items-center gap-3">
-            {{-- Search Realtime --}}
             <div class="relative">
                 <span class="absolute -translate-y-1/2 left-4 top-1/2 pointer-events-none">
                     <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -28,8 +26,6 @@
                     placeholder="Cari nama, No KTP, No HP, No CIF..."
                     class="h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-12 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 xl:w-[280px]">
             </div>
-
-            {{-- Unduh --}}
             <a href="{{ route(auth()->user()->role . '.nasabah') }}?export=1&search={{ request('search') }}"
                 class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                 <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -37,8 +33,6 @@
                 </svg>
                 Unduh
             </a>
-
-            {{-- Tambah --}}
             <a href="{{ route(auth()->user()->role . '.nasabah.create') }}"
                 class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-theme-sm font-medium text-white shadow-theme-xs hover:bg-brand-600 transition-colors">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -71,7 +65,7 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">No</th>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">No CIF</th>
-                    <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Nama Nasabah</th>
+                    <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Nama & Alamat</th>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">No KTP</th>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">No HP</th>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Cabang</th>
@@ -89,8 +83,11 @@
                     <td class="px-6 py-3.5">
                         <span class="font-medium text-theme-sm text-gray-800 dark:text-white/90">{{ $customer->no_cif }}</span>
                     </td>
-                    <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400">
-                        {{ $customer->nama }}
+                    <td class="px-6 py-3.5">
+                        <p class="text-theme-sm font-medium text-gray-800 dark:text-white/90">{{ $customer->nama }}</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5 max-w-[200px] truncate" title="{{ $customer->alamat }}">
+                            {{ $customer->alamat ?? '-' }}
+                        </p>
                     </td>
                     <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400">{{ $customer->no_ktp }}</td>
                     <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400">{{ $customer->no_hp }}</td>
@@ -106,7 +103,6 @@
                     </td>
                     <td class="px-6 py-3.5">
                         <div class="flex items-center gap-3">
-                            {{-- Edit --}}
                             <a href="{{ route(auth()->user()->role . '.nasabah.edit', $customer->id) }}"
                                 class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -114,8 +110,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                 </svg>
                             </a>
-                            {{-- Hapus --}}
-                            <button onclick="openDeleteModal({{ $customer->id }}, '{{ $customer->nama }}')"
+                            <button onclick="openDeleteModal({{ $customer->id }}, '{{ addslashes($customer->nama) }}')"
                                 class="text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -135,40 +130,12 @@
         </table>
     </div>
 
-    {{-- Footer: Info + Pagination --}}
+    {{-- Footer --}}
     <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        {{-- Info --}}
         <p class="text-sm text-gray-500 dark:text-gray-400">
             Menampilkan {{ $customers->firstItem() ?? 0 }}–{{ $customers->lastItem() ?? 0 }} dari {{ $customers->total() }} data
         </p>
-
-        {{-- Pagination --}}
-        <div class="flex items-center gap-2">
-            {{-- Sebelumnya --}}
-            <a href="{{ $customers->previousPageUrl() }}"
-                class="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 {{ $customers->onFirstPage() ? 'opacity-40 pointer-events-none' : '' }}">
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.58301 9.99868C2.58272 10.1909 2.65588 10.3833 2.80249 10.53L7.79915 15.5301C8.09194 15.8231 8.56682 15.8233 8.85981 15.5305C9.15281 15.2377 9.15297 14.7629 8.86018 14.4699L5.14009 10.7472L16.6675 10.7472C17.0817 10.7472 17.4175 10.4114 17.4175 9.99715C17.4175 9.58294 17.0817 9.24715 16.6675 9.24715L5.14554 9.24715L8.86017 5.53016C9.15297 5.23717 9.15282 4.7623 8.85983 4.4695C8.56684 4.1767 8.09197 4.17685 7.79917 4.46984L2.84167 9.43049C2.68321 9.568 2.58301 9.77087 2.58301 9.99715C2.58301 9.99766 2.58301 9.99817 2.58301 9.99868Z" fill="currentColor"/></svg>
-                <span class="hidden sm:inline">Sebelumnya</span>
-            </a>
-
-            {{-- Page Numbers --}}
-            @foreach($customers->getUrlRange(1, $customers->lastPage()) as $page => $url)
-                <a href="{{ $url }}"
-                    class="flex h-9 w-9 items-center justify-center rounded-lg text-theme-sm font-medium transition-colors mx-0.5
-                    {{ $page == $customers->currentPage()
-                        ? 'bg-brand-500 text-white'
-                        : 'text-gray-700 hover:bg-brand-500 hover:text-white dark:text-gray-400' }}">
-                    {{ $page }}
-                </a>
-            @endforeach
-
-            {{-- Selanjutnya --}}
-            <a href="{{ $customers->nextPageUrl() }}"
-                class="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 {{ !$customers->hasMorePages() ? 'opacity-40 pointer-events-none' : '' }}">
-                <span class="hidden sm:inline">Selanjutnya</span>
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.4175 9.9986C17.4178 10.1909 17.3446 10.3832 17.198 10.53L12.2013 15.5301C11.9085 15.8231 11.4337 15.8233 11.1407 15.5305C10.8477 15.2377 10.8475 14.7629 11.1403 14.4699L14.8604 10.7472L3.33301 10.7472C2.91879 10.7472 2.58301 10.4114 2.58301 9.99715C2.58301 9.58294 2.91879 9.24715 3.33301 9.24715L14.8549 9.24715L11.1403 5.53016C10.8475 5.23717 10.8477 4.7623 11.1407 4.4695C11.4336 4.1767 11.9085 4.17685 12.2013 4.46984L17.1588 9.43049C17.3173 9.568 17.4175 9.77087 17.4175 9.99715C17.4175 9.99763 17.4175 9.99812 17.4175 9.9986Z" fill="currentColor"/></svg>
-            </a>
-        </div>
+        <x-common.pagination :paginator="$customers" />
     </div>
 </div>
 
@@ -205,7 +172,6 @@
 
 @push('scripts')
 <script>
-// Search realtime dengan debounce
 let searchTimeout;
 document.getElementById('searchInput').addEventListener('input', function() {
     clearTimeout(searchTimeout);
@@ -218,7 +184,6 @@ document.getElementById('searchInput').addEventListener('input', function() {
     }, 800);
 });
 
-// Modal Hapus
 function openDeleteModal(id, nama) {
     const role = '{{ auth()->user()->role }}';
     document.getElementById('deleteNama').textContent = nama;
