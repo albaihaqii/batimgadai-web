@@ -1,11 +1,32 @@
+@php
+    $totalNasabahAktif  = \App\Models\Customer::where('status', 'aktif')->count();
+    $totalTransaksi     = \App\Models\Gadai::whereNotIn('status', ['menunggu_approval', 'ditolak'])->count();
+    $totalCabang        = \App\Models\Branch::where('status', 'aktif')->count();
+@endphp
+
 {{-- Stats Bar --}}
 <section class="relative bg-[#1F5C3A] grid-pattern-light overflow-hidden">
     <div class="max-w-screen-xl mx-auto px-6 py-16">
         <div class="grid grid-cols-3 gap-8 text-center">
             @foreach([
-                ['icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>','value'=>'120','display'=>'120+','label'=>'Nasabah Aktif'],
-                ['icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-1.281m5.94 1.28l-1.28 5.941"/>','value'=>'500','display'=>'500+','label'=>'Transaksi Berhasil'],
-                ['icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>','value'=>'3','display'=>'3','label'=>'Cabang'],
+                [
+                    'icon'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>',
+                    'value'   => $totalNasabahAktif,
+                    'display' => $totalNasabahAktif . '+',
+                    'label'   => 'Nasabah Aktif',
+                ],
+                [
+                    'icon'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-1.281m5.94 1.28l-1.28 5.941"/>',
+                    'value'   => $totalTransaksi,
+                    'display' => $totalTransaksi . '+',
+                    'label'   => 'Transaksi Berhasil',
+                ],
+                [
+                    'icon'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>',
+                    'value'   => $totalCabang,
+                    'display' => (string) $totalCabang,
+                    'label'   => 'Cabang',
+                ],
             ] as $stat)
             <div class="group fade-up">
                 <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-[#B6D96C]/20 transition-all duration-300">
@@ -14,8 +35,8 @@
                     </svg>
                 </div>
                 <div class="text-4xl font-extrabold text-white mb-1 counter"
-                        data-target="{{ $stat['value'] }}"
-                        data-suffix="{{ Str::endsWith($stat['display'], '+') ? '+' : '' }}">
+                    data-target="{{ $stat['value'] }}"
+                    data-suffix="{{ str_ends_with($stat['display'], '+') ? '+' : '' }}">
                     {{ $stat['display'] }}
                 </div>
                 <div class="text-[#B6D96C] text-sm font-medium">{{ $stat['label'] }}</div>
@@ -25,7 +46,7 @@
     </div>
 </section>
 
-{{-- Tentang Kami --}}
+{{-- Tentang Kami — isi sama persis tidak berubah --}}
 <section id="tentang" class="relative bg-white grid-pattern py-24 overflow-hidden">
     <div class="max-w-screen-xl mx-auto px-6">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
@@ -80,23 +101,23 @@
 
 @push('scripts')
 <script>
-    const counters = document.querySelectorAll('.counter');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const el = entry.target;
-            const target = parseInt(el.dataset.target);
-            const suffix = el.dataset.suffix || '';
-            let start = 0;
-            const step = target / (1800 / 16);
-            const interval = setInterval(() => {
-                start += step;
-                if (start >= target) { start = target; clearInterval(interval); }
-                el.textContent = Math.floor(start).toLocaleString('id-ID') + suffix;
-            }, 16);
-            observer.unobserve(el);
-        });
-    }, { threshold: 0.5 });
-    counters.forEach(c => observer.observe(c));
+const counters = document.querySelectorAll('.counter');
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el     = entry.target;
+        const target = parseInt(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        let start    = 0;
+        const step   = target / (1800 / 16);
+        const interval = setInterval(() => {
+            start += step;
+            if (start >= target) { start = target; clearInterval(interval); }
+            el.textContent = Math.floor(start).toLocaleString('id-ID') + suffix;
+        }, 16);
+        observer.unobserve(el);
+    });
+}, { threshold: 0.5 });
+counters.forEach(c => observer.observe(c));
 </script>
 @endpush

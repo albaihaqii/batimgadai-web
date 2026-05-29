@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
 
-{{-- Alert --}}
 @if(session('success'))
 <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium dark:bg-green-500/10 dark:border-green-500/20 dark:text-green-400">
     {{ session('success') }}
@@ -16,35 +15,27 @@
 
 <div class="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">
 
-    {{-- Header --}}
     <div class="flex flex-col gap-4 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Manajemen Cabang</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Kelola data cabang BATIM GADAI</p>
         </div>
         <div class="flex items-center gap-3">
-            {{-- Search --}}
             <div class="relative">
                 <span class="absolute -translate-y-1/2 left-4 top-1/2 pointer-events-none">
-                    <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M3.04199 9.37381C3.04199 5.87712 5.87735 3.04218 9.37533 3.04218C12.8733 3.04218 15.7087 5.87712 15.7087 9.37381C15.7087 12.8705 12.8733 15.7055 9.37533 15.7055C5.87735 15.7055 3.04199 12.8705 3.04199 9.37381ZM9.37533 1.54218C5.04926 1.54218 1.54199 5.04835 1.54199 9.37381C1.54199 13.6993 5.04926 17.2055 9.37533 17.2055C11.2676 17.2055 13.0032 16.5346 14.3572 15.4178L17.1773 18.2381C17.4702 18.531 17.945 18.5311 18.2379 18.2382C18.5308 17.9453 18.5309 17.4704 18.238 17.1775L15.4182 14.3575C16.5367 13.0035 17.2087 11.2671 17.2087 9.37381C17.2087 5.04835 13.7014 1.54218 9.37533 1.54218Z" fill=""/>
-                    </svg>
+                    <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.04199 9.37381C3.04199 5.87712 5.87735 3.04218 9.37533 3.04218C12.8733 3.04218 15.7087 5.87712 15.7087 9.37381C15.7087 12.8705 12.8733 15.7055 9.37533 15.7055C5.87735 15.7055 3.04199 12.8705 3.04199 9.37381ZM9.37533 1.54218C5.04926 1.54218 1.54199 5.04835 1.54199 9.37381C1.54199 13.6993 5.04926 17.2055 9.37533 17.2055C11.2676 17.2055 13.0032 16.5346 14.3572 15.4178L17.1773 18.2381C17.4702 18.531 17.945 18.5311 18.2379 18.2382C18.5308 17.9453 18.5309 17.4704 18.238 17.1775L15.4182 14.3575C16.5367 13.0035 17.2087 11.2671 17.2087 9.37381C17.2087 5.04835 13.7014 1.54218 9.37533 1.54218Z" fill=""/></svg>
                 </span>
                 <input type="text" id="searchInput" value="{{ request('search') }}"
                     placeholder="Cari nama, kode, alamat..."
                     class="h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-12 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 xl:w-[280px]">
             </div>
-
-            {{-- Unduh --}}
             <a href="{{ route('superadmin.cabang') }}?export=1&search={{ request('search') }}"
-                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
                 <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path d="M10 2.5V13.5M10 13.5L6 9.5M10 13.5L14 9.5M3 15.5H17" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 Unduh
             </a>
-
-            {{-- Tambah --}}
             <a href="{{ route('superadmin.cabang.create') }}"
                 class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-theme-sm font-medium text-white shadow-theme-xs hover:bg-brand-600 transition-colors">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -55,7 +46,6 @@
         </div>
     </div>
 
-    {{-- Entries --}}
     <div class="px-6 mb-3">
         <form method="GET" action="{{ route('superadmin.cabang') }}" class="flex items-center gap-2">
             <input type="hidden" name="search" value="{{ request('search') }}">
@@ -70,7 +60,6 @@
         </form>
     </div>
 
-    {{-- Table --}}
     <div class="max-w-full overflow-x-auto">
         <table class="w-full">
             <thead class="border-t border-y border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
@@ -80,7 +69,8 @@
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Nama Cabang</th>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Alamat</th>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">No Telepon</th>
-                    <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Maps</th>
+                    <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Operasional</th>
+                    <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Koordinat</th>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Status</th>
                     <th class="px-6 py-3 text-left text-theme-xs font-medium text-gray-500 dark:text-gray-400">Aksi</th>
                 </tr>
@@ -95,25 +85,20 @@
                         <span class="font-medium text-theme-sm text-gray-800 dark:text-white/90">{{ $branch->kode }}</span>
                     </td>
                     <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400">{{ $branch->nama }}</td>
-                    <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400">{{ $branch->alamat ?? '-' }}</td>
+                    <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">{{ $branch->alamat ?? '-' }}</td>
                     <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400">{{ $branch->no_telp ?? '-' }}</td>
-                    <td class="px-6 py-3.5">
-                        @if($branch->maps_url)
-                            <button onclick="openMapsModal('{{ $branch->nama }}', '{{ $branch->alamat ?? '' }}', '{{ $branch->maps_url }}')"
-                                class="text-gray-400 hover:text-brand-500 dark:hover:text-brand-400 transition-colors">
-                                {{-- Icon peta + pin --}}
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-                                    <circle cx="17" cy="4" r="2" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
-                                </svg>
-                            </button>
-                        @else
-                            <span class="text-gray-300 dark:text-gray-700 cursor-not-allowed">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-                                    <circle cx="17" cy="4" r="2" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
-                                </svg>
+                    <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400">
+                        <div>{{ $branch->hari_buka ?? 'Senin - Sabtu' }}</div>
+                        <div class="text-xs text-gray-400">{{ $branch->jam_buka ?? '07.00' }} – {{ $branch->jam_tutup ?? '17.00' }} WIB</div>
+                    </td>
+                    <td class="px-6 py-3.5 text-theme-sm text-gray-500 dark:text-gray-400">
+                        @if($branch->latitude && $branch->longitude)
+                            <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 14 6 14s6-8.75 6-14c0-3.314-2.686-6-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z"/></svg>
+                                Tersedia
                             </span>
+                        @else
+                            <span class="text-gray-300 dark:text-gray-600 text-xs">Belum diisi</span>
                         @endif
                     </td>
                     <td class="px-6 py-3.5">
@@ -126,7 +111,6 @@
                     </td>
                     <td class="px-6 py-3.5">
                         <div class="flex items-center gap-3">
-                            {{-- Edit --}}
                             <a href="{{ route('superadmin.cabang.edit', $branch->id) }}"
                                 class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -134,7 +118,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                 </svg>
                             </a>
-                            {{-- Hapus --}}
                             <button onclick="openDeleteModal({{ $branch->id }}, '{{ $branch->nama }}')"
                                 class="text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -146,7 +129,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="px-6 py-10 text-center text-sm text-gray-400 dark:text-gray-500">
+                    <td colspan="9" class="px-6 py-10 text-center text-sm text-gray-400 dark:text-gray-500">
                         Belum ada data cabang
                     </td>
                 </tr>
@@ -155,7 +138,6 @@
         </table>
     </div>
 
-    {{-- Footer: Info + Pagination --}}
     <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p class="text-sm text-gray-500 dark:text-gray-400">
             Menampilkan {{ $branches->firstItem() ?? 0 }}–{{ $branches->lastItem() ?? 0 }} dari {{ $branches->total() }} data
@@ -169,9 +151,7 @@
             @foreach($branches->getUrlRange(1, $branches->lastPage()) as $page => $url)
                 <a href="{{ $url }}"
                     class="flex h-9 w-9 items-center justify-center rounded-lg text-theme-sm font-medium transition-colors
-                    {{ $page == $branches->currentPage()
-                        ? 'bg-brand-500 text-white'
-                        : 'text-gray-700 hover:bg-brand-500 hover:text-white dark:text-gray-400' }}">
+                    {{ $page == $branches->currentPage() ? 'bg-brand-500 text-white' : 'text-gray-700 hover:bg-brand-500 hover:text-white dark:text-gray-400' }}">
                     {{ $page }}
                 </a>
             @endforeach
@@ -184,7 +164,6 @@
     </div>
 </div>
 
-{{-- Modal Hapus --}}
 <div id="modalHapus" class="hidden fixed inset-0 z-99999 flex items-center justify-center bg-black/50">
     <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-md mx-4">
         <div class="p-6 text-center">
@@ -195,7 +174,7 @@
             </div>
             <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Hapus Data Cabang</h4>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                Apakah Anda yakin ingin menghapus cabang <span id="deleteNama" class="font-semibold text-gray-800 dark:text-white"></span>? Tindakan ini tidak dapat dibatalkan.
+                Apakah Anda yakin ingin menghapus cabang <span id="deleteNama" class="font-semibold text-gray-800 dark:text-white"></span>?
             </p>
             <div class="flex justify-center gap-3">
                 <button onclick="document.getElementById('modalHapus').classList.add('hidden')"
@@ -215,43 +194,6 @@
     </div>
 </div>
 
-{{-- Modal Maps --}}
-<div id="modalMaps" class="hidden fixed inset-0 z-99999 flex items-center justify-center bg-black/50">
-    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-2xl mx-4">
-        <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
-            <div>
-                <h4 class="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-brand-500">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 14 6 14s6-8.75 6-14c0-3.314-2.686-6-6-6z"/>
-                        <circle cx="12" cy="8" r="2.5" stroke-width="1.5"/>
-                    </svg>
-                    <span id="mapsNama"></span>
-                </h4>
-                <p id="mapsAlamat" class="text-sm text-gray-500 dark:text-gray-400 mt-0.5"></p>
-            </div>
-            <button onclick="document.getElementById('modalMaps').classList.add('hidden')"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
-        </div>
-        <div class="p-4">
-            <iframe id="mapsIframe" src="" width="100%" height="400"
-                style="border:0; border-radius: 12px;"
-                allowfullscreen="" loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-        </div>
-        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex justify-end">
-            <button onclick="document.getElementById('modalMaps').classList.add('hidden')"
-                class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
-                Tutup
-            </button>
-        </div>
-    </div>
-</div>
-
 @push('scripts')
 <script>
 let searchTimeout;
@@ -265,13 +207,6 @@ document.getElementById('searchInput').addEventListener('input', function() {
         window.location.href = url.toString();
     }, 800);
 });
-
-function openMapsModal(nama, alamat, mapsUrl) {
-    document.getElementById('mapsNama').textContent = nama;
-    document.getElementById('mapsAlamat').textContent = alamat || 'Alamat tidak tersedia';
-    document.getElementById('mapsIframe').src = mapsUrl;
-    document.getElementById('modalMaps').classList.remove('hidden');
-}
 
 function openDeleteModal(id, nama) {
     document.getElementById('deleteNama').textContent = nama;
