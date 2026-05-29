@@ -65,9 +65,19 @@ class MenuHelper
                         'path' => '/superadmin/loker',
                     ],
                     [
+                        'icon' => 'lelang',
+                        'name' => 'Manajemen Lelang',
+                        'path' => '/superadmin/lelang',
+                    ],
+                    [
                         'icon' => 'jasa-rate',
                         'name' => 'Perhitungan Jasa',
                         'path' => '/superadmin/jasa-rate',
+                    ],
+                    [
+                        'icon' => 'calculator',
+                        'name' => 'Simulasi Pinjaman',
+                        'path' => '/superadmin/simulasi',
                     ],
                 ],
             ],
@@ -88,7 +98,23 @@ class MenuHelper
                         'name' => 'Approval',
                         'subItems' => [
                             ['name' => 'Pengajuan Gadai', 'path' => '/superadmin/approval/gadai'],
+                            ['name' => 'Booking Kunjungan', 'path' => '/superadmin/booking/kunjungan'],
                         ],
+                    ],
+                ],
+            ],
+            [
+                'title' => 'Konten',
+                'items' => [
+                    [
+                        'icon' => 'banner',
+                        'name' => 'Banner Landing',
+                        'path' => '/superadmin/banner/landing',
+                    ],
+                    [
+                        'icon' => 'banner',
+                        'name' => 'Banner Mobile',
+                        'path' => '/superadmin/banner/mobile',
                     ],
                 ],
             ],
@@ -99,9 +125,9 @@ class MenuHelper
                         'icon' => 'charts',
                         'name' => 'Laporan',
                         'subItems' => [
-                            ['name' => 'Laporan Harian', 'path' => '/superadmin/laporan/harian'],
-                            ['name' => 'Laporan Bulanan', 'path' => '/superadmin/laporan/bulanan'],
-                            ['name' => 'Laporan Per Cabang', 'path' => '/superadmin/laporan/cabang'],
+                            ['name' => 'Laporan Harian',   'path' => '/superadmin/laporan/harian'],
+                            ['name' => 'Laporan Mingguan', 'path' => '/superadmin/laporan/mingguan'],
+                            ['name' => 'Laporan Bulanan',  'path' => '/superadmin/laporan/bulanan'],
                         ],
                     ],
                 ],
@@ -146,6 +172,11 @@ class MenuHelper
                         'name' => 'Manajemen Loker',
                         'path' => '/admin/loker',
                     ],
+                    [
+                        'icon' => 'banner',
+                        'name' => 'Manajemen Banner',
+                        'path' => '/admin/banner/mobile',
+                    ],
                 ],
             ],
             [
@@ -165,6 +196,7 @@ class MenuHelper
                         'name' => 'Approval',
                         'subItems' => [
                             ['name' => 'Pengajuan Gadai', 'path' => '/admin/approval/gadai'],
+                            ['name' => 'Booking Kunjungan', 'path' => '/superadmin/booking/kunjungan'],
                         ],
                     ],
                 ],
@@ -176,8 +208,9 @@ class MenuHelper
                         'icon' => 'charts',
                         'name' => 'Laporan',
                         'subItems' => [
-                            ['name' => 'Laporan Harian', 'path' => '/admin/laporan/harian'],
-                            ['name' => 'Laporan Bulanan', 'path' => '/admin/laporan/bulanan'],
+                            ['name' => 'Laporan Harian',   'path' => '/admin/laporan/harian'],
+                            ['name' => 'Laporan Mingguan', 'path' => '/admin/laporan/mingguan'],
+                            ['name' => 'Laporan Bulanan',  'path' => '/admin/laporan/bulanan'],
                         ],
                     ],
                 ],
@@ -251,9 +284,15 @@ class MenuHelper
 
             'jasa-rate' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2.25C6.61522 2.25 2.25 6.61522 2.25 12C2.25 17.3848 6.61522 21.75 12 21.75C17.3848 21.75 21.75 17.3848 21.75 12C21.75 6.61522 17.3848 2.25 12 2.25ZM0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12ZM12 5.25C12.4142 5.25 12.75 5.58579 12.75 6V6.31673C14.3804 6.60867 15.75 7.83361 15.75 9.5C15.75 9.91421 15.4142 10.25 15 10.25C14.5858 10.25 14.25 9.91421 14.25 9.5C14.25 8.58007 13.3132 7.75 12 7.75C10.6868 7.75 9.75 8.58007 9.75 9.5C9.75 10.4199 10.6868 11.25 12 11.25C13.9372 11.25 15.75 12.4066 15.75 14.5C15.75 16.1664 14.3804 17.3913 12.75 17.6833V18C12.75 18.4142 12.4142 18.75 12 18.75C11.5858 18.75 11.25 18.4142 11.25 18V17.6833C9.61957 17.3913 8.25 16.1664 8.25 14.5C8.25 14.0858 8.58579 13.75 9 13.75C9.41421 13.75 9.75 14.0858 9.75 14.5C9.75 15.4199 10.6868 16.25 12 16.25C13.3132 16.25 14.25 15.4199 14.25 14.5C14.25 13.5801 13.3132 12.75 12 12.75C10.0628 12.75 8.25 11.5934 8.25 9.5C8.25 7.83361 9.61957 6.60867 11.25 6.31673V6C11.25 5.58579 11.5858 5.25 12 5.25Z" fill="currentColor"/></svg>',
 
+            'calculator' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.75 3.75A2.25 2.25 0 004.5 6v12a2.25 2.25 0 002.25 2.25h10.5A2.25 2.25 0 0019.5 18V6a2.25 2.25 0 00-2.25-2.25H6.75zM6 6a.75.75 0 01.75-.75h10.5A.75.75 0 0118 6v12a.75.75 0 01-.75.75H6.75A.75.75 0 016 18V6zm1.5 1.5h9v3h-9v-3zm0 4.5h1.5V13.5H7.5V12zm3 0H12V13.5h-1.5V12zm3 0h1.5V13.5H13.5V12zm-6 3H9V16.5H7.5V15zm3 0H12V16.5h-1.5V15zm3 0h1.5V16.5H13.5V15z" fill="currentColor"/></svg>',
+
             'gadai' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.25 6C3.25 4.48122 4.48122 3.25 6 3.25H18C19.5188 3.25 20.75 4.48122 20.75 6V18C20.75 19.5188 19.5188 20.75 18 20.75H6C4.48122 20.75 3.25 19.5188 3.25 18V6ZM6 4.75C5.30964 4.75 4.75 5.30964 4.75 6V18C4.75 18.6904 5.30964 19.25 6 19.25H18C18.6904 19.25 19.25 18.6904 19.25 18V6C19.25 5.30964 18.6904 4.75 18 4.75H6ZM12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V11.25H16C16.4142 11.25 16.75 11.5858 16.75 12C16.75 12.4142 16.4142 12.75 16 12.75H12.75V16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16V12.75H8C7.58579 12.75 7.25 12.4142 7.25 12C7.25 11.5858 7.58579 11.25 8 11.25H11.25V8C11.25 7.58579 11.5858 7.25 12 7.25Z" fill="currentColor"/></svg>',
 
             'approval' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" fill="currentColor"/></svg>',
+
+            'lelang' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2.25L19.5 6V18L12 21.75L4.5 18V6L12 2.25ZM12 3.93L6.25 6.8L12 9.68L17.75 6.8L12 3.93ZM5.75 8.02V17.07L11.25 19.82V10.77L5.75 8.02ZM12.75 19.82L18.25 17.07V8.02L12.75 10.77V19.82ZM15.25 11.25C15.25 10.8358 15.5858 10.5 16 10.5H18C18.4142 10.5 18.75 10.8358 18.75 11.25C18.75 11.6642 18.4142 12 18 12H16C15.5858 12 15.25 11.6642 15.25 11.25Z" fill="currentColor"/></svg>',
+
+            'banner' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.25 6C3.25 4.48122 4.48122 3.25 6 3.25H18C19.5188 3.25 20.75 4.48122 20.75 6V18C20.75 19.5188 19.5188 20.75 18 20.75H6C4.48122 20.75 3.25 19.5188 3.25 18V6ZM6 4.75C5.30964 4.75 4.75 5.30964 4.75 6V18C4.75 18.6904 5.30964 19.25 6 19.25H18C18.6904 19.25 19.25 18.6904 19.25 18V6C19.25 5.30964 18.6904 4.75 18 4.75H6ZM3.25 9C3.25 8.58579 3.58579 8.25 4 8.25H20C20.4142 8.25 20.75 8.58579 20.75 9C20.75 9.41421 20.4142 9.75 20 9.75H4C3.58579 9.75 3.25 9.41421 3.25 9ZM7 12.25C6.58579 12.25 6.25 12.5858 6.25 13C6.25 13.4142 6.58579 13.75 7 13.75H14C14.4142 13.75 14.75 13.4142 14.75 13C14.75 12.5858 14.4142 12.25 14 12.25H7ZM6.25 16C6.25 15.5858 6.58579 15.25 7 15.25H10C10.4142 15.25 10.75 15.5858 10.75 16C10.75 16.4142 10.4142 16.75 10 16.75H7C6.58579 16.75 6.25 16.4142 6.25 16Z" fill="currentColor"/></svg>',
 
             'charts' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.25 5C3.25 4.58579 3.58579 4.25 4 4.25H20C20.4142 4.25 20.75 4.58579 20.75 5V19C20.75 19.4142 20.4142 19.75 20 19.75H4C3.58579 19.75 3.25 19.4142 3.25 19V5ZM4.75 5.75V18.25H19.25V5.75H4.75ZM8 14.25C8.41421 14.25 8.75 14.5858 8.75 15V16C8.75 16.4142 8.41421 16.75 8 16.75C7.58579 16.75 7.25 16.4142 7.25 16V15C7.25 14.5858 7.58579 14.25 8 14.25ZM12 10.25C12.4142 10.25 12.75 10.5858 12.75 11V16C12.75 16.4142 12.4142 16.75 12 16.75C11.5858 16.75 11.25 16.4142 11.25 16V11C11.25 10.5858 11.5858 10.25 12 10.25ZM16 7.25C16.4142 7.25 16.75 7.58579 16.75 8V16C16.75 16.4142 16.4142 16.75 16 16.75C15.5858 16.75 15.25 16.4142 15.25 16V8C15.25 7.58579 15.5858 7.25 16 7.25Z" fill="currentColor"/></svg>',
 
