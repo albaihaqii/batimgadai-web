@@ -61,7 +61,7 @@ class ApprovalController extends Controller
     {
         $role = Auth::user()->role;
 
-        if ($role !== 'superadmin' && $gadai->cabang_id !== Auth::user()->cabang_id) {
+        if ($role !== 'superadmin' && (int)$gadai->cabang_id !== (int)Auth::user()->cabang_id) {
             abort(403);
         }
 
@@ -79,7 +79,7 @@ class ApprovalController extends Controller
     {
         $role = Auth::user()->role;
 
-        if ($role !== 'superadmin' && $gadai->cabang_id !== Auth::user()->cabang_id) {
+        if ($role !== 'superadmin' && (int)$gadai->cabang_id !== (int)Auth::user()->cabang_id) {
             abort(403);
         }
 
