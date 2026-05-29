@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LelangController;
 
 // Landing Page
 Route::get('/', fn() => view('frontend.index'))->name('home');
@@ -9,9 +10,7 @@ Route::get('/', fn() => view('frontend.index'))->name('home');
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Public
 Route::get('/loker/{kode_loker}', [App\Http\Controllers\LockerController::class, 'scan'])->name('loker.scan');
@@ -27,12 +26,19 @@ Route::get('/api/preview-jasa-rate', function (\Illuminate\Http\Request $request
     return response()->json($data);
 });
 
+// API Mobile
+Route::get('/api/mobile/notifikasi', [App\Http\Controllers\Api\MobileNotificationController::class, 'index']);
+Route::post('/api/mobile/notifikasi/{id}/read', [App\Http\Controllers\Api\MobileNotificationController::class, 'markRead']);
+Route::get('/api/mobile/banners', [App\Http\Controllers\BannerController::class, 'apiBanners']);
+Route::get('/api/simulasi/options', [App\Http\Controllers\SimulasiController::class, 'apiOptions']);
+Route::post('/api/simulasi/hitung', [App\Http\Controllers\SimulasiController::class, 'apiHitung']);
+
 // Superadmin
 Route::prefix('superadmin')
     ->name('superadmin.')
     ->middleware(['auth', 'role:superadmin'])
     ->group(function () {
-        Route::get('/dashboard', fn() => view('superadmin.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
         Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
         Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
@@ -90,6 +96,11 @@ Route::prefix('superadmin')
         Route::get('/approval/gadai/{gadai}', [App\Http\Controllers\ApprovalController::class, 'show'])->name('approval.gadai.show');
         Route::post('/approval/gadai/{gadai}', [App\Http\Controllers\ApprovalController::class, 'proses'])->name('approval.gadai.proses');
 
+        Route::get('/booking/kunjungan', [App\Http\Controllers\BookingController::class, 'index'])->name('booking.kunjungan');
+        Route::get('/booking/kunjungan/{id}', [App\Http\Controllers\BookingController::class, 'show'])->name('booking.kunjungan.show');
+        Route::post('/booking/kunjungan/{id}/proses', [App\Http\Controllers\BookingController::class, 'proses'])->name('booking.kunjungan.proses');
+        Route::post('/booking/kunjungan/{id}/selesai', [App\Http\Controllers\BookingController::class, 'selesai'])->name('booking.kunjungan.selesai');
+
         Route::get('/transaksi/perpanjangan', [App\Http\Controllers\PerpanjanganController::class, 'index'])->name('transaksi.perpanjangan');
         Route::get('/transaksi/perpanjangan/proses', [App\Http\Controllers\PerpanjanganController::class, 'create'])->name('transaksi.perpanjangan.create');
         Route::post('/transaksi/perpanjangan', [App\Http\Controllers\PerpanjanganController::class, 'store'])->name('transaksi.perpanjangan.store');
@@ -101,6 +112,45 @@ Route::prefix('superadmin')
         Route::post('/transaksi/pelunasan', [App\Http\Controllers\PelunasanController::class, 'store'])->name('transaksi.pelunasan.store');
         Route::get('/transaksi/pelunasan/{pelunasan}', [App\Http\Controllers\PelunasanController::class, 'show'])->name('transaksi.pelunasan.show');
         Route::post('/transaksi/pelunasan/{pelunasan}/retry', [App\Http\Controllers\PelunasanController::class, 'retry'])->name('transaksi.pelunasan.retry');
+
+        Route::get('/laporan/harian', [App\Http\Controllers\ReportController::class, 'harian'])->name('laporan.harian');
+        Route::get('/laporan/mingguan', [App\Http\Controllers\ReportController::class, 'mingguan'])->name('laporan.mingguan');
+        Route::get('/laporan/bulanan', [App\Http\Controllers\ReportController::class, 'bulanan'])->name('laporan.bulanan');
+        Route::get('/laporan/harian/export', [App\Http\Controllers\ReportController::class, 'exportHarian'])->name('laporan.harian.export');
+        Route::get('/laporan/mingguan/export', [App\Http\Controllers\ReportController::class, 'exportMingguan'])->name('laporan.mingguan.export');
+        Route::get('/laporan/bulanan/export', [App\Http\Controllers\ReportController::class, 'exportBulanan'])->name('laporan.bulanan.export');
+
+        Route::get('/notifikasi', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifikasi');
+        Route::post('/notifikasi/read-all', [App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifikasi.read-all');
+        Route::post('/notifikasi/{id}/read', [App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifikasi.read');
+
+        Route::get('/lelang', [LelangController::class, 'index'])->name('lelang');
+        Route::get('/lelang/{id}', [LelangController::class, 'show'])->name('lelang.show');
+        Route::post('/lelang/{id}/proses', [LelangController::class, 'proses'])->name('lelang.proses');
+        Route::post('/lelang/{id}/batal', [LelangController::class, 'batal'])->name('lelang.batal');
+
+        Route::get('/banner/landing', [App\Http\Controllers\BannerController::class, 'indexLanding'])->name('banner.landing');
+        Route::get('/banner/landing/tambah', [App\Http\Controllers\BannerController::class, 'createLanding'])->name('banner.landing.create');
+        Route::post('/banner/landing', [App\Http\Controllers\BannerController::class, 'storeLanding'])->name('banner.landing.store');
+        Route::get('/banner/landing/{id}/edit', [App\Http\Controllers\BannerController::class, 'editLanding'])->name('banner.landing.edit');
+        Route::put('/banner/landing/{id}', [App\Http\Controllers\BannerController::class, 'updateLanding'])->name('banner.landing.update');
+        Route::delete('/banner/{id}', [App\Http\Controllers\BannerController::class, 'destroy'])->name('banner.destroy');
+        Route::post('/banner/{id}/toggle', [App\Http\Controllers\BannerController::class, 'toggle'])->name('banner.toggle');
+
+        Route::get('/banner/mobile', [App\Http\Controllers\BannerController::class, 'indexMobile'])->name('banner.mobile');
+        Route::get('/banner/mobile/tambah', [App\Http\Controllers\BannerController::class, 'createMobile'])->name('banner.mobile.create');
+        Route::post('/banner/mobile', [App\Http\Controllers\BannerController::class, 'storeMobile'])->name('banner.mobile.store');
+        Route::get('/banner/mobile/{id}/edit', [App\Http\Controllers\BannerController::class, 'editMobile'])->name('banner.mobile.edit');
+        Route::put('/banner/mobile/{id}', [App\Http\Controllers\BannerController::class, 'updateMobile'])->name('banner.mobile.update');
+
+        Route::get('/simulasi', [App\Http\Controllers\SimulasiController::class, 'index'])->name('simulasi');
+        Route::post('/simulasi/master/{kategori}', [App\Http\Controllers\SimulasiController::class, 'updateMaster'])->name('simulasi.master.update');
+        Route::post('/simulasi/kecacatan', [App\Http\Controllers\SimulasiController::class, 'storeKecacatan'])->name('simulasi.kecacatan.store');
+        Route::put('/simulasi/kecacatan/{id}', [App\Http\Controllers\SimulasiController::class, 'updateKecacatan'])->name('simulasi.kecacatan.update');
+        Route::delete('/simulasi/kecacatan/{id}', [App\Http\Controllers\SimulasiController::class, 'destroyKecacatan'])->name('simulasi.kecacatan.destroy');
+        Route::post('/simulasi/kelengkapan', [App\Http\Controllers\SimulasiController::class, 'storeKelengkapan'])->name('simulasi.kelengkapan.store');
+        Route::put('/simulasi/kelengkapan/{id}', [App\Http\Controllers\SimulasiController::class, 'updateKelengkapan'])->name('simulasi.kelengkapan.update');
+        Route::delete('/simulasi/kelengkapan/{id}', [App\Http\Controllers\SimulasiController::class, 'destroyKelengkapan'])->name('simulasi.kelengkapan.destroy');
     });
 
 // Admin
@@ -108,7 +158,7 @@ Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', 'role:admin'])
     ->group(function () {
-        Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
         Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
         Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
@@ -141,10 +191,34 @@ Route::prefix('admin')
         Route::get('/approval/gadai/{gadai}', [App\Http\Controllers\ApprovalController::class, 'show'])->name('approval.gadai.show');
         Route::post('/approval/gadai/{gadai}', [App\Http\Controllers\ApprovalController::class, 'proses'])->name('approval.gadai.proses');
 
+        Route::get('/booking/kunjungan', [App\Http\Controllers\BookingController::class, 'index'])->name('booking.kunjungan');
+        Route::get('/booking/kunjungan/{id}', [App\Http\Controllers\BookingController::class, 'show'])->name('booking.kunjungan.show');
+        Route::post('/booking/kunjungan/{id}/proses', [App\Http\Controllers\BookingController::class, 'proses'])->name('booking.kunjungan.proses');
+        Route::post('/booking/kunjungan/{id}/selesai', [App\Http\Controllers\BookingController::class, 'selesai'])->name('booking.kunjungan.selesai');
+
         Route::get('/transaksi/perpanjangan', [App\Http\Controllers\PerpanjanganController::class, 'index'])->name('transaksi.perpanjangan');
         Route::get('/transaksi/perpanjangan/{perpanjangan}', [App\Http\Controllers\PerpanjanganController::class, 'show'])->name('transaksi.perpanjangan.show');
         Route::get('/transaksi/pelunasan', [App\Http\Controllers\PelunasanController::class, 'index'])->name('transaksi.pelunasan');
         Route::get('/transaksi/pelunasan/{pelunasan}', [App\Http\Controllers\PelunasanController::class, 'show'])->name('transaksi.pelunasan.show');
+
+        Route::get('/laporan/harian', [App\Http\Controllers\ReportController::class, 'harian'])->name('laporan.harian');
+        Route::get('/laporan/mingguan', [App\Http\Controllers\ReportController::class, 'mingguan'])->name('laporan.mingguan');
+        Route::get('/laporan/bulanan', [App\Http\Controllers\ReportController::class, 'bulanan'])->name('laporan.bulanan');
+        Route::get('/laporan/harian/export', [App\Http\Controllers\ReportController::class, 'exportHarian'])->name('laporan.harian.export');
+        Route::get('/laporan/mingguan/export', [App\Http\Controllers\ReportController::class, 'exportMingguan'])->name('laporan.mingguan.export');
+        Route::get('/laporan/bulanan/export', [App\Http\Controllers\ReportController::class, 'exportBulanan'])->name('laporan.bulanan.export');
+
+        Route::get('/notifikasi', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifikasi');
+        Route::post('/notifikasi/read-all', [App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifikasi.read-all');
+        Route::post('/notifikasi/{id}/read', [App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifikasi.read');
+
+        Route::get('/banner/mobile', [App\Http\Controllers\BannerController::class, 'indexMobile'])->name('banner.mobile');
+        Route::get('/banner/mobile/tambah', [App\Http\Controllers\BannerController::class, 'createMobile'])->name('banner.mobile.create');
+        Route::post('/banner/mobile', [App\Http\Controllers\BannerController::class, 'storeMobile'])->name('banner.mobile.store');
+        Route::get('/banner/mobile/{id}/edit', [App\Http\Controllers\BannerController::class, 'editMobile'])->name('banner.mobile.edit');
+        Route::put('/banner/mobile/{id}', [App\Http\Controllers\BannerController::class, 'updateMobile'])->name('banner.mobile.update');
+        Route::delete('/banner/{id}', [App\Http\Controllers\BannerController::class, 'destroy'])->name('banner.destroy');
+        Route::post('/banner/{id}/toggle', [App\Http\Controllers\BannerController::class, 'toggle'])->name('banner.toggle');
     });
 
 // Officer
@@ -152,7 +226,7 @@ Route::prefix('officer')
     ->name('officer.')
     ->middleware(['auth', 'role:officer'])
     ->group(function () {
-        Route::get('/dashboard', fn() => view('officer.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
         Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
         Route::get('/password', [App\Http\Controllers\ProfileController::class, 'showPassword'])->name('password');
@@ -185,6 +259,15 @@ Route::prefix('officer')
         Route::post('/transaksi/pelunasan', [App\Http\Controllers\PelunasanController::class, 'store'])->name('transaksi.pelunasan.store');
         Route::get('/transaksi/pelunasan/{pelunasan}', [App\Http\Controllers\PelunasanController::class, 'show'])->name('transaksi.pelunasan.show');
         Route::post('/transaksi/pelunasan/{pelunasan}/retry', [App\Http\Controllers\PelunasanController::class, 'retry'])->name('transaksi.pelunasan.retry');
+
+        Route::get('/laporan/harian', [App\Http\Controllers\ReportController::class, 'harian'])->name('laporan.harian');
+        Route::get('/laporan/bulanan', [App\Http\Controllers\ReportController::class, 'bulanan'])->name('laporan.bulanan');
+        Route::get('/laporan/harian/export', [App\Http\Controllers\ReportController::class, 'exportHarian'])->name('laporan.harian.export');
+        Route::get('/laporan/bulanan/export', [App\Http\Controllers\ReportController::class, 'exportBulanan'])->name('laporan.bulanan.export');
+
+        Route::get('/notifikasi', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifikasi');
+        Route::post('/notifikasi/read-all', [App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifikasi.read-all');
+        Route::post('/notifikasi/{id}/read', [App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifikasi.read');
     });
 
 // TailAdmin Demo (development only)
