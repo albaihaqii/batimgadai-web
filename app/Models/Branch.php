@@ -9,12 +9,15 @@ class Branch extends Model
     protected $table = 'cabang';
 
     protected $fillable = [
-        'kode',
-        'nama',
-        'alamat',
-        'no_telp',
-        'maps_url',
-        'status',
+        'kode', 'nama', 'alamat',
+        'latitude', 'longitude',
+        'hari_buka', 'jam_buka', 'jam_tutup',
+        'no_telp', 'maps_url', 'status',
+    ];
+
+    protected $casts = [
+        'latitude'  => 'float',
+        'longitude' => 'float',
     ];
 
     public function customers()

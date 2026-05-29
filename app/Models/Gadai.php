@@ -85,6 +85,11 @@ class Gadai extends Model
         return $this->hasMany(Sbg::class, 'gadai_id');
     }
 
+    public function lelang()
+    {
+        return $this->hasOne(Lelang::class, 'gadai_id');
+    }
+
     public function perpanjangan()
     {
         return $this->hasMany(Perpanjangan::class);
