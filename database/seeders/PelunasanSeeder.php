@@ -30,16 +30,14 @@ class PelunasanSeeder extends Seeder
 
             $nilaiPinjaman = (int) $gadai->nilai_pinjaman;
             $tipeJasa      = $gadai->tipe_jasa ?? 'umum';
-            $tglPelunasan  = Carbon::now()->subDays(rand(1, 5));
-            $tglJt         = $gadai->tgl_jatuh_tempo
-                ? Carbon::parse($gadai->tgl_jatuh_tempo)
-                : Carbon::now()->addDays(10);
+            $tglPelunasan  = Carbon::create(2026, rand(2, 5), rand(1, 28));
+            $tglJt         = $gadai->tgl_jatuh_tempo ? Carbon::parse($gadai->tgl_jatuh_tempo) : $tglPelunasan->copy()->addDays(10);
 
             $rate        = HitungBiayaHelper::getJasaRate($nilaiPinjaman, $tipeJasa);
             $jasaPersen  = $rate['jasa_30_hari'];
             $jasaNominal = round($nilaiPinjaman * ($jasaPersen / 100));
 
-            $hariTerlambat = rand(0, 1) ? rand(1, 20) : 0;
+            $hariTerlambat = rand(0, 1) ? rand(1, 15) : 0;
             $dendaPersen   = 0;
             $dendaNominal  = 0;
 
@@ -51,13 +49,12 @@ class PelunasanSeeder extends Seeder
                 $dendaNominal = round($nilaiPinjaman * ($dendaPersen / 100));
             }
 
-            $totalTebus = $nilaiPinjaman + $jasaNominal + $dendaNominal;
+            $totalTebus  = $nilaiPinjaman + $jasaNominal + $dendaNominal;
+            $metodeBayar = rand(1, 10) <= 7 ? 'tunai' : 'midtrans';
 
             $prefix = $tglPelunasan->format('ym') . strtoupper($gadai->branch->kode);
             $last   = Pelunasan::where('no_sbg', 'like', $prefix . '%')->count();
             $noSbg  = $prefix . 'L' . str_pad($last + 1, 5, '0', STR_PAD_LEFT);
-
-            $metodeBayar = rand(1, 10) <= 7 ? 'tunai' : 'midtrans';
 
             $pelunasan = Pelunasan::create([
                 'gadai_id'          => $gadai->id,
@@ -75,18 +72,13 @@ class PelunasanSeeder extends Seeder
                 'tgl_jt'            => $tglJt,
                 'status_bayar'      => 'berhasil',
                 'metode_bayar'      => $metodeBayar,
-                'midtrans_order_id' => $metodeBayar === 'midtrans'
-                    ? 'LNS-' . $gadai->id . '-' . time() . rand(100, 999)
-                    : null,
-                'created_at' => $tglPelunasan,
-                'updated_at' => $tglPelunasan,
+                'midtrans_order_id' => $metodeBayar === 'midtrans' ? 'LNS-' . $gadai->id . '-' . time() . rand(100, 999) : null,
+                'created_at'        => $tglPelunasan,
+                'updated_at'        => $tglPelunasan,
             ]);
 
             if ($gadai->loker_id) {
-                Locker::where('id', $gadai->loker_id)->update([
-                    'status'   => 'kosong',
-                    'gadai_id' => null,
-                ]);
+                Locker::where('id', $gadai->loker_id)->update(['status' => 'kosong', 'gadai_id' => null]);
             }
 
             Sbg::create([

@@ -15,7 +15,6 @@ class PerpanjanganSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil gadai perpanjangan — tidak ambil jatuh_tempo supaya statusnya tetap jatuh_tempo
         $gadais = Gadai::with(['nasabah', 'branch'])
             ->where('status', 'perpanjangan')
             ->get();
@@ -29,17 +28,13 @@ class PerpanjanganSeeder extends Seeder
 
             $nilaiPinjaman   = (int) $gadai->nilai_pinjaman;
             $tipeJasa        = $gadai->tipe_jasa ?? 'umum';
-            $tglPerpanjangan = Carbon::now()->subDays(rand(3, 10));
-            $tglJtLama       = $gadai->tgl_jatuh_tempo
-                ? Carbon::parse($gadai->tgl_jatuh_tempo)->subDays(30)
-                : Carbon::now()->subDays(35);
+            $tglPerpanjangan = Carbon::create(2026, rand(3, 5), rand(1, 28));
             $tglJtBaru       = $tglPerpanjangan->copy()->addDays(30);
 
-            $rate       = HitungBiayaHelper::getJasaRate($nilaiPinjaman, $tipeJasa);
-            $jasaPersen = $rate['jasa_30_hari'];
+            $rate        = HitungBiayaHelper::getJasaRate($nilaiPinjaman, $tipeJasa);
+            $jasaPersen  = $rate['jasa_30_hari'];
             $jasaNominal = round($nilaiPinjaman * ($jasaPersen / 100));
 
-            // Simulasikan sebagian telat
             $hariTerlambat = rand(0, 1) ? rand(1, 20) : 0;
             $dendaPersen   = 0;
             $dendaNominal  = 0;
@@ -52,13 +47,12 @@ class PerpanjanganSeeder extends Seeder
                 $dendaNominal = round($nilaiPinjaman * ($dendaPersen / 100));
             }
 
-            $totalBayar = $jasaNominal + $dendaNominal;
+            $totalBayar  = $jasaNominal + $dendaNominal;
+            $metodeBayar = rand(1, 10) <= 7 ? 'tunai' : 'midtrans';
 
             $prefix = $tglPerpanjangan->format('ym') . strtoupper($gadai->branch->kode);
             $last   = Perpanjangan::where('no_sbg', 'like', $prefix . '%')->count();
             $noSbg  = $prefix . 'P' . str_pad($last + 1, 5, '0', STR_PAD_LEFT);
-
-            $metodeBayar = rand(1, 10) <= 7 ? 'tunai' : 'midtrans';
 
             $perpanjangan = Perpanjangan::create([
                 'gadai_id'          => $gadai->id,
@@ -73,15 +67,13 @@ class PerpanjanganSeeder extends Seeder
                 'hari_terlambat'    => $hariTerlambat,
                 'total_bayar'       => $totalBayar,
                 'tgl_perpanjangan'  => $tglPerpanjangan,
-                'tgl_jt_lama'       => $tglJtLama,
+                'tgl_jt_lama'       => $gadai->tgl_jatuh_tempo ? Carbon::parse($gadai->tgl_jatuh_tempo)->subDays(30) : $tglPerpanjangan->copy()->subDays(30),
                 'tgl_jt_baru'       => $tglJtBaru,
                 'status_bayar'      => 'berhasil',
                 'metode_bayar'      => $metodeBayar,
-                'midtrans_order_id' => $metodeBayar === 'midtrans'
-                    ? 'PRP-' . $gadai->id . '-' . time() . rand(100, 999)
-                    : null,
-                'created_at' => $tglPerpanjangan,
-                'updated_at' => $tglPerpanjangan,
+                'midtrans_order_id' => $metodeBayar === 'midtrans' ? 'PRP-' . $gadai->id . '-' . time() . rand(100, 999) : null,
+                'created_at'        => $tglPerpanjangan,
+                'updated_at'        => $tglPerpanjangan,
             ]);
 
             Sbg::create([

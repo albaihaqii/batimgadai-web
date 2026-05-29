@@ -10,7 +10,6 @@ class LockerSeeder extends Seeder
 {
     public function run(): void
     {
-        // Keterangan per rak
         $keteranganRak = [
             'A' => 'Loker handphone dan tablet',
             'B' => 'Loker laptop dan elektronik besar',
@@ -20,29 +19,25 @@ class LockerSeeder extends Seeder
             'F' => 'Loker kamera dan aksesoris elektronik',
         ];
 
-        $branches = Branch::all();
+        $jumlahPerRak = [
+            'A' => 10,
+            'B' => 8,
+            'C' => 6,
+            'D' => 6,
+            'E' => 6,
+            'F' => 5,
+        ];
 
-        foreach ($branches as $branch) {
+        foreach (Branch::all() as $branch) {
             foreach ($keteranganRak as $rak => $keterangan) {
-                // Jumlah loker per rak bervariasi
-                $jumlah = match($rak) {
-                    'A' => 8,  // HP/tablet paling banyak
-                    'B' => 6,  // Laptop cukup banyak
-                    'C' => 5,  // BPKB/dokumen sedang
-                    'D' => 4,  // Barang RT sedang
-                    'E' => 5,  // Perhiasan sedang
-                    'F' => 4,  // Kamera sedikit
-                    default => 4,
-                };
-
-                for ($i = 0; $i < $jumlah; $i++) {
+                for ($i = 0; $i < $jumlahPerRak[$rak]; $i++) {
                     Locker::create([
-                        'kode_loker'  => Locker::generateKode($branch->kode, $rak),
-                        'cabang_id'   => $branch->id,
-                        'rak'         => $rak,
-                        'status'      => 'kosong',
-                        'gadai_id'    => null,
-                        'keterangan'  => $keterangan,
+                        'kode_loker' => Locker::generateKode($branch->kode, $rak),
+                        'cabang_id'  => $branch->id,
+                        'rak'        => $rak,
+                        'status'     => 'kosong',
+                        'gadai_id'   => null,
+                        'keterangan' => $keterangan,
                     ]);
                 }
             }
