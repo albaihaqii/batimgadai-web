@@ -403,6 +403,92 @@ Route::prefix('mobile')->group(function () {
 
         return response()->json(['success' => true, 'data' => $all]);
     });
+
+    // FCM Token
+    Route::post('/fcm-token', function (\Illuminate\Http\Request $request) {
+        $request->validate([
+            'no_hp'    => 'required|string',
+            'token'    => 'required|string',
+            'platform' => 'nullable|string',
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('fcm_tokens')->updateOrInsert(
+            ['no_hp' => $request->no_hp],
+            [
+                'token'      => $request->token,
+                'platform'   => $request->platform ?? 'android',
+                'updated_at' => now(),
+                'created_at' => now(),
+            ]
+        );
+
+        return response()->json(['message' => 'Token disimpan']);
+    });
+
+    // Notifikasi — pengunjung (tanpa no_cif) dan nasabah (dengan no_cif)
+    Route::get('/notifikasi', function (\Illuminate\Http\Request $request) {
+        $noCif = $request->get('no_cif', '');
+
+        $query = \App\Models\Notification::query();
+
+        if (!empty($noCif)) {
+            // Nasabah — notif info umum + notif khusus nasabah ini
+            $nasabah = \App\Models\Customer::where('no_cif', $noCif)->first();
+            $query->where(function ($q) use ($nasabah) {
+                // Notif info umum untuk semua
+                $q->where('tipe_penerima', 'semua');
+                // Notif khusus nasabah ini
+                if ($nasabah) {
+                    $q->orWhere(function ($q2) use ($nasabah) {
+                        $q2->where('tipe_penerima', 'nasabah')
+                        ->where('penerima_id', $nasabah->id);
+                    });
+                }
+            });
+        } else {
+            // Pengunjung — hanya notif info umum
+            $query->where('tipe_penerima', 'semua')
+                ->where('tipe_notif', 'info');
+        }
+
+        $notifs = $query->orderBy('created_at', 'desc')
+            ->limit(30)
+            ->get()
+            ->map(fn($n) => [
+                'id'         => $n->id,
+                'judul'      => $n->judul,
+                'isi'        => $n->pesan,
+                'tipe_notif' => $n->tipe_notif,
+                'is_read'    => (bool) $n->is_read,
+                'created_at' => optional($n->created_at)->format('d M Y H:i'),
+            ]);
+
+        return response()->json(['success' => true, 'data' => $notifs]);
+    });
+
+    // Mark notifikasi sebagai sudah dibaca
+    Route::post('/notifikasi/{id}/read', function ($id) {
+        \App\Models\Notification::where('id', $id)->update(['is_read' => true]);
+        return response()->json(['success' => true]);
+    });
+
+    // Banner mobile — pakai model Banner dengan tipe 'mobile'
+    Route::get('/banners', function () {
+        $banners = \App\Models\Banner::where('tipe', 'mobile')
+            ->where('is_active', true)
+            ->orderBy('urutan')
+            ->limit(5)
+            ->get()
+            ->map(fn($b) => [
+                'id'       => $b->id,
+                'judul'    => $b->judul,
+                'foto'     => $b->foto,
+                'url_link' => $b->url_link,
+                'foto_url' => $b->foto ? url('storage/' . $b->foto) : null,
+            ]);
+
+        return response()->json(['success' => true, 'data' => $banners]);
+    });
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -410,24 +496,32 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
 
-    Route::middleware('role:superadmin')->prefix('superadmin')->group(function () {
-        Route::apiResource('nasabah', CustomerController::class)->parameters(['nasabah' => 'customer']);
-        Route::apiResource('pimpinan', AdminController::class)->parameters(['pimpinan' => 'admin']);
-        Route::apiResource('petugas', OfficerController::class)->parameters(['petugas' => 'officer']);
-        Route::apiResource('cabang', BranchController::class)->parameters(['cabang' => 'branch']);
+    Route::middleware('role:superadmin')->prefix('superadmin')->name('api.superadmin.')->group(function () {
+        Route::apiResource('nasabah', CustomerController::class)
+            ->parameters(['nasabah' => 'customer']);
+        Route::apiResource('pimpinan', AdminController::class)
+            ->parameters(['pimpinan' => 'admin']);
+        Route::apiResource('petugas', OfficerController::class)
+            ->parameters(['petugas' => 'officer']);
+        Route::apiResource('cabang', BranchController::class)
+            ->parameters(['cabang' => 'branch']);
         Route::get('loker', [LockerController::class, 'index']);
         Route::post('loker', [LockerController::class, 'store']);
         Route::get('loker/{locker}', [LockerController::class, 'show']);
         Route::delete('loker/{locker}', [LockerController::class, 'destroy']);
-        Route::apiResource('transaksi/gadai', GadaiController::class)->parameters(['gadai' => 'gadai'])->except(['update']);
+        Route::apiResource('transaksi/gadai', GadaiController::class)
+            ->parameters(['gadai' => 'gadai'])
+            ->except(['update']);
         Route::get('approval/gadai', [ApprovalController::class, 'index']);
         Route::get('approval/gadai/{gadai}', [ApprovalController::class, 'show']);
         Route::post('approval/gadai/{gadai}', [ApprovalController::class, 'proses']);
     });
 
-    Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::apiResource('nasabah', CustomerController::class)->parameters(['nasabah' => 'customer']);
-        Route::apiResource('petugas', OfficerController::class)->parameters(['petugas' => 'officer']);
+    Route::middleware('role:admin')->prefix('admin')->name('api.admin.')->group(function () {
+        Route::apiResource('nasabah', CustomerController::class)
+            ->parameters(['nasabah' => 'customer']);
+        Route::apiResource('petugas', OfficerController::class)
+            ->parameters(['petugas' => 'officer']);
         Route::get('loker', [LockerController::class, 'index']);
         Route::post('loker', [LockerController::class, 'store']);
         Route::get('loker/{locker}', [LockerController::class, 'show']);
@@ -439,8 +533,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('approval/gadai/{gadai}', [ApprovalController::class, 'proses']);
     });
 
-    Route::middleware('role:officer')->prefix('officer')->group(function () {
-        Route::apiResource('nasabah', CustomerController::class)->parameters(['nasabah' => 'customer']);
+    Route::middleware('role:officer')->prefix('officer')->name('api.officer.')->group(function () {
+        Route::apiResource('nasabah', CustomerController::class)
+            ->parameters(['nasabah' => 'customer']);
         Route::get('loker', [LockerController::class, 'index']);
         Route::get('loker/{locker}', [LockerController::class, 'show']);
         Route::get('transaksi/gadai', [GadaiController::class, 'index']);
