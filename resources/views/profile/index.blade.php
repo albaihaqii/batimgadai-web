@@ -29,7 +29,7 @@
                     <div class="flex items-center gap-4 mb-3">
                         <div class="w-16 h-16 rounded-full bg-brand-500 flex items-center justify-center overflow-hidden flex-shrink-0">
                             @if($user->foto)
-                                <img src="{{ asset('storage/' . $user->foto) }}?v={{ time() }}" alt="{{ $user->nama }}" class="w-full h-full object-cover" id="foto-preview" />
+                                <img src="{{ url('storage/' . $user->foto) }}?v={{ $user->updated_at?->timestamp ?? time() }}" alt="{{ $user->nama }}" class="w-full h-full object-cover" id="foto-preview" />
                             @else
                                 <span class="text-white font-bold text-xl" id="foto-initial">
                                     {{ strtoupper(substr($user->nama, 0, 1)) }}
