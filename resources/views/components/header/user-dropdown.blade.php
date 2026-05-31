@@ -16,7 +16,7 @@
     >
         <span class="mr-3 overflow-hidden rounded-full h-11 w-11 bg-brand-500 flex items-center justify-center flex-shrink-0">
             @if(auth()->user()->foto)
-                <img src="{{ asset('storage/' . auth()->user()->foto) }}" alt="{{ auth()->user()->nama }}" class="w-full h-full object-cover" />
+                <img src="{{ url('storage/' . auth()->user()->foto) }}?v={{ auth()->user()->updated_at?->timestamp ?? time() }}" alt="{{ auth()->user()->nama }}" class="w-full h-full object-cover" />
             @else
                 <span class="text-white font-bold text-sm">
                     {{ strtoupper(substr(auth()->user()->nama, 0, 1)) }}
@@ -51,7 +51,7 @@
         <div class="flex items-center gap-3 mb-3 pb-3 border-b border-gray-200 dark:border-gray-800">
             <span class="overflow-hidden rounded-full h-10 w-10 bg-brand-500 flex items-center justify-center flex-shrink-0">
                 @if(auth()->user()->foto)
-                    <img src="{{ asset('storage/' . auth()->user()->foto) }}" alt="{{ auth()->user()->nama }}" class="w-full h-full object-cover" />
+                    <img src="{{ url('storage/' . auth()->user()->foto) }}?v={{ auth()->user()->updated_at?->timestamp ?? time() }}" alt="{{ auth()->user()->nama }}" class="w-full h-full object-cover" />
                 @else
                     <span class="text-white font-bold text-sm">
                         {{ strtoupper(substr(auth()->user()->nama, 0, 1)) }}
