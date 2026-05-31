@@ -1,23 +1,37 @@
-export function initChartSix() {
+export function initChartSix(data = []) {
     const chartSixEl = document.querySelector("#chartSix");
     if (chartSixEl) {
+        if (chartSixEl.__chartSix) {
+            return chartSixEl.__chartSix;
+        }
+
+        const source = Array.isArray(data) && data.length ? data : [
+            { gadai: 44, perpanjangan: 13, pelunasan: 11, jatuh_tempo: 21 },
+            { gadai: 55, perpanjangan: 23, pelunasan: 17, jatuh_tempo: 7 },
+            { gadai: 41, perpanjangan: 20, pelunasan: 15, jatuh_tempo: 25 },
+            { gadai: 67, perpanjangan: 8, pelunasan: 15, jatuh_tempo: 13 },
+            { gadai: 22, perpanjangan: 13, pelunasan: 21, jatuh_tempo: 22 },
+            { gadai: 43, perpanjangan: 27, pelunasan: 14, jatuh_tempo: 8 },
+            { gadai: 55, perpanjangan: 13, pelunasan: 18, jatuh_tempo: 18 },
+            { gadai: 41, perpanjangan: 23, pelunasan: 20, jatuh_tempo: 20 },
+        ];
         const chartSixOptions = {
             series: [
                 {
                     name: "Gadai",
-                    data: [44, 55, 41, 67, 22, 43, 55, 41],
+                    data: source.map((item) => item.gadai || 0),
                 },
                 {
                     name: "Perpanjangan",
-                    data: [13, 23, 20, 8, 13, 27, 13, 23],
+                    data: source.map((item) => item.perpanjangan || 0),
                 },
                 {
                     name: "Pelunasan",
-                    data: [11, 17, 15, 15, 21, 14, 18, 20],
+                    data: source.map((item) => item.pelunasan || 0),
                 },
                 {
                     name: "Jatuh Tempo",
-                    data: [21, 7, 25, 13, 22, 8, 18, 20],
+                    data: source.map((item) => item.jatuh_tempo || 0),
                 },
             ],
             colors: ["#174a2e", "#1F5C3A", "#4a8c5c", "#d4edaa"],
@@ -55,6 +69,10 @@ export function initChartSix() {
                     "Jun",
                     "Jul",
                     "Aug",
+                    "Sep",
+                    "Okt",
+                    "Nov",
+                    "Des",
                 ],
                 axisBorder: {
                     show: false,
@@ -109,6 +127,7 @@ export function initChartSix() {
 
         const chartSix = new ApexCharts(chartSixEl, chartSixOptions);
         chartSix.render();
+        chartSixEl.__chartSix = chartSix;
         return chartSix;
     }
 }
