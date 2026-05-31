@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Perpanjangan;
 use App\Models\Pelunasan;
 use App\Models\Branch;
+use App\Models\Locker;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -58,7 +59,28 @@ class DashboardController extends Controller
         $pctPinjaman = $this->pct((float) $totalPinjamanBulanIni, (float) $totalPinjamanBulanLalu);
 
         $bulan = [];
+        $auditKas = [];
         for ($i = 1; $i <= 12; $i++) {
+            $uangKeluar = (clone $gadaiQuery)
+                ->whereMonth('tgl_gadai', $i)
+                ->whereYear('tgl_gadai', $tahunIni)
+                ->whereNotNull('nilai_pinjaman')
+                ->sum('nilai_pinjaman');
+
+            $masukPerpanjangan = Perpanjangan::when($cabangId, fn($q) =>
+                $q->whereHas('gadai', fn($g) => $g->where('cabang_id', $cabangId)))
+                ->where('status_bayar', 'berhasil')
+                ->whereMonth('tgl_perpanjangan', $i)
+                ->whereYear('tgl_perpanjangan', $tahunIni)
+                ->sum('total_bayar');
+
+            $masukPelunasan = Pelunasan::when($cabangId, fn($q) =>
+                $q->whereHas('gadai', fn($g) => $g->where('cabang_id', $cabangId)))
+                ->where('status_bayar', 'berhasil')
+                ->whereMonth('tgl_pelunasan', $i)
+                ->whereYear('tgl_pelunasan', $tahunIni)
+                ->sum('total_tebus');
+
             $bulan[] = [
                 'gadai'        => (clone $gadaiQuery)
                     ->whereMonth('tgl_gadai', $i)
@@ -80,7 +102,17 @@ class DashboardController extends Controller
                     ->whereYear('tgl_jatuh_tempo', $tahunIni)
                     ->count(),
             ];
+
+            $auditKas[] = [
+                'keluar' => (float) $uangKeluar,
+                'masuk'  => (float) $masukPerpanjangan + (float) $masukPelunasan,
+            ];
         }
+
+        $totalUangKeluar = collect($auditKas)->sum('keluar');
+        $totalUangMasuk  = collect($auditKas)->sum('masuk');
+        $saldoAudit      = $totalUangMasuk - $totalUangKeluar;
+        $namaCabang      = $user->branch?->nama ?? 'Semua Cabang';
 
         $perCabang = [];
         if ($role === 'superadmin') {
@@ -97,6 +129,42 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $nasabahHariIni = Customer::when($cabangId, fn($q) => $q->where('cabang_id', $cabangId))
+            ->where('created_by', $user->id)
+            ->whereDate('created_at', $now->toDateString())
+            ->count();
+
+        $pengajuanHariIni = (clone $gadaiQuery)
+            ->where('officer_id', $user->id)
+            ->whereDate('created_at', $now->toDateString())
+            ->count();
+
+        $perpanjanganHariIni = Perpanjangan::where('officer_id', $user->id)
+            ->whereDate('tgl_perpanjangan', $now->toDateString())
+            ->count();
+
+        $pelunasanHariIni = Pelunasan::where('officer_id', $user->id)
+            ->whereDate('tgl_pelunasan', $now->toDateString())
+            ->count();
+
+        $gadaiSiapTransaksi = Gadai::with(['nasabah', 'barang'])
+            ->when($cabangId, fn($q) => $q->where('cabang_id', $cabangId))
+            ->whereIn('status', ['aktif', 'jatuh_tempo', 'perpanjangan'])
+            ->orderByRaw('tgl_jatuh_tempo IS NULL, tgl_jatuh_tempo ASC')
+            ->limit(6)
+            ->get();
+
+        $aktivitasOfficer = Gadai::with(['nasabah', 'barang'])
+            ->when($cabangId, fn($q) => $q->where('cabang_id', $cabangId))
+            ->where('officer_id', $user->id)
+            ->latest()
+            ->limit(6)
+            ->get();
+
+        $lokerKosong = Locker::when($cabangId, fn($q) => $q->where('cabang_id', $cabangId))
+            ->where('status', 'kosong')
+            ->count();
+
         $view = match($role) {
             'admin'   => 'admin.dashboard',
             'officer' => 'officer.dashboard',
@@ -106,7 +174,10 @@ class DashboardController extends Controller
         return view($view, compact(
             'totalNasabah', 'transaksiAktif', 'menungguApproval',
             'totalPinjamanBulanIni', 'bulan', 'perCabang', 'pengajuanTerbaru',
-            'pctNasabah', 'pctAktif', 'pctPinjaman'
+            'pctNasabah', 'pctAktif', 'pctPinjaman',
+            'auditKas', 'totalUangKeluar', 'totalUangMasuk', 'saldoAudit', 'namaCabang',
+            'nasabahHariIni', 'pengajuanHariIni', 'perpanjanganHariIni', 'pelunasanHariIni',
+            'gadaiSiapTransaksi', 'aktivitasOfficer', 'lokerKosong'
         ));
     }
 

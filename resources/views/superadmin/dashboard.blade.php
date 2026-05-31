@@ -98,8 +98,8 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Rekap gadai, perpanjangan & pelunasan tahun ini</p>
             </div>
         </div>
-        <div class="max-w-full overflow-x-auto custom-scrollbar">
-            <div id="chartSix" class="min-w-[500px] h-[315px]"></div>
+        <div class="min-w-0 max-w-full">
+            <div id="chartSix" class="h-[315px] w-full"></div>
         </div>
     </div>
 
@@ -184,40 +184,6 @@
 <script>
     window.__bulanData  = @json($bulan);
     window.__perCabang  = @json($perCabang);
-</script>
-<script type="module">
-    import { initChartSix } from '/resources/js/components/chart/chart-6.js';
-    initChartSix(window.__bulanData);
-</script>
-<script>
-    setTimeout(function () {
-        const perCabang = window.__perCabang || [];
-        const pieEl = document.querySelector('#chartPie');
-        if (!pieEl || typeof ApexCharts === 'undefined' || perCabang.length === 0) return;
-        new ApexCharts(pieEl, {
-            series: perCabang.map(c => c.total),
-            chart: { type: 'donut', height: 250, fontFamily: 'Outfit, sans-serif', toolbar: { show: false } },
-            labels: perCabang.map(c => c.nama),
-            colors: ['#1F5C3A', '#B6D96C', '#174a2e', '#4CAF50', '#8BC34A'],
-            legend: { show: false },
-            dataLabels: { enabled: false },
-            plotOptions: {
-                pie: {
-                    donut: {
-                        size: '72%',
-                        labels: {
-                            show: true,
-                            name: { show: true, fontSize: '13px', fontFamily: 'Outfit, sans-serif', fontWeight: 400, color: '#6B7280', offsetY: -4 },
-                            value: { show: true, fontSize: '22px', fontFamily: 'Outfit, sans-serif', fontWeight: 700, color: '#111827', offsetY: 4, formatter: (val) => val },
-                            total: { show: true, label: 'Total', fontSize: '13px', fontFamily: 'Outfit, sans-serif', fontWeight: 400, color: '#6B7280', formatter: (w) => w.globals.seriesTotals.reduce((a, b) => a + b, 0) },
-                        },
-                    },
-                },
-            },
-            stroke: { width: 2, colors: ['#ffffff'] },
-            tooltip: { enabled: false },
-        }).render();
-    }, 600);
 </script>
 @endpush
 

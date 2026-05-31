@@ -35,7 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
         import('./components/chart/chart-3').then(module => module.initChartThree());
     }
     if (document.querySelector('#chartSix')) {
-        import('./components/chart/chart-6').then(module => module.initChartSix());
+        import('./components/chart/chart-6').then(module => module.initChartSix(window.__bulanData || []));
+    }
+    if (document.querySelector('#chartAuditKas')) {
+        import('./components/chart/chart-audit-kas').then(module => module.initChartAuditKas(window.__auditKas || []));
+    }
+    if (document.querySelector('#chartPie')) {
+        import('./components/chart/chart-per-cabang').then(module => module.initChartPerCabang(window.__perCabang || []));
     }
     if (document.querySelector('#chartEight')) {
         import('./components/chart/chart-8').then(module => module.initChartEight());
