@@ -31,10 +31,16 @@ class ProfileController extends Controller
         $user->email = $request->email;
 
         if ($request->hasFile('foto')) {
-            if ($user->foto) {
-                Storage::disk('public')->delete($user->foto);
+            $oldFoto = $user->foto;
+            $newFoto = $request->file('foto')->store('foto-profil', 'public');
+
+            if ($newFoto) {
+                $user->foto = $newFoto;
+
+                if ($oldFoto) {
+                    Storage::disk('public')->delete($oldFoto);
+                }
             }
-            $user->foto = $request->file('foto')->store('foto-profil', 'public');
         }
 
         $user->save();
